@@ -28,6 +28,7 @@ type Props = {
   startIcon?: ReactNode;
   endIcon?: ReactNode;
   disabled?: boolean | undefined;
+  className?: string | undefined;
 
   children: ReactNode;
   prefetch?: "intent" | "render" | "none";
@@ -48,6 +49,7 @@ export const ButtonLink: React.FC<Props> = ({
   disabled,
   startIcon,
   endIcon,
+  className,
   children,
   prefetch,
 }) => {
@@ -85,7 +87,8 @@ export const ButtonLink: React.FC<Props> = ({
       "btn-active": active,
       "btn-disabled": disabled,
       loading: loading,
-    }
+    },
+    className
   );
 
   return (

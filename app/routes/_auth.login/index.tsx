@@ -1,7 +1,14 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { json } from "@vercel/remix";
+import { omit } from "ramda";
 import { Button, Card, Input } from "react-daisyui";
+import { unauthorized } from "remix-utils";
+import zod from "zod";
+import { sessionStorage } from "~/services.server/session";
+
+import UserController from "~/controllers/UserController";
 
 import ButtonLink from "~/components/ButtonLink";
 
@@ -14,7 +21,7 @@ export const loader: LoaderFunction = async () => {
 export const AuthLogin = () => {
   return (
     <>
-      <Form method="post" target="/login">
+      <Form method="POST" target="/login">
         <Card.Body>
           <Card.Title>
             <h1 className="text-2xl">Login</h1>
@@ -57,9 +64,35 @@ export const AuthLogin = () => {
   );
 };
 
-export const action: ActionFunction = async () => {
-  console.log("action");
-  return json({});
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+
+  const data = Object.fromEntries(formData.entries());
+  const user = zod
+    .object({
+      email: zod.string().email(),
+      password: zod.string().min(8),
+    })
+    .parse(data);
+
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+
+  const userController = new UserController();
+  return userController
+    .getUserByEmailAndPassword(user)
+    .then(async (user) => {
+      session.set("user", omit(["password"], user));
+      return redirect("/", {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(session),
+        },
+      });
+    })
+    .catch((error) => {
+      return unauthorized({});
+    });
 };
 
 export default AuthLogin;

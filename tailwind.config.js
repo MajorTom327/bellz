@@ -13,15 +13,15 @@ const lightTheme = {
 };
 
 const darkTheme = {
-  primary: "#fde047",
-  secondary: "#60a5fa",
-  accent: "#fb923c",
-  neutral: "#4b5563",
-  "base-100": "#1f2937",
-  info: "#60a5fa",
-  success: "#86efac",
-  warning: "#fde047",
-  error: "#ef4444",
+  primary: "#661AE6",
+  secondary: "#D926AA",
+  accent: "#1FB2A5",
+  neutral: "#FFFFFF",
+  "base-100": "#2A303C",
+  info: "#3ABFF8",
+  success: "#36D399",
+  warning: "#FBBD23",
+  error: "#F87272",
 };
 
 module.exports = {

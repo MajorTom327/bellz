@@ -2,6 +2,9 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { Button, Card, Input } from "react-daisyui";
+import zod from "zod";
+
+import UserController from "~/controllers/UserController";
 
 import ButtonLink from "~/components/ButtonLink";
 
@@ -14,7 +17,7 @@ export const loader: LoaderFunction = async () => {
 export const AuthSignup = () => {
   return (
     <>
-      <Form>
+      <Form method="POST">
         <Card.Body>
           <Card.Title>
             <h1 className="text-2xl">Signup</h1>
@@ -69,7 +72,23 @@ export const AuthSignup = () => {
   );
 };
 
-export const action: ActionFunction = async () => {
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+
+  const data = Object.fromEntries(formData.entries());
+
+  const user = zod
+    .object({
+      email: zod.string().email(),
+      password: zod.string().min(8),
+      confirm: zod.string().min(8),
+    })
+    .refine((data) => data.password === data.confirm, {})
+    .parse(data);
+
+  const userController = new UserController();
+  console.log("Creating user with email", user);
+  console.log(await userController.createUser(user));
   return json({});
 };
 

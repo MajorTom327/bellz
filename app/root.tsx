@@ -1,3 +1,4 @@
+import type { User } from "@prisma/client";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import type {
   LinksFunction,
@@ -36,10 +37,12 @@ export const loader: LoaderFunction = async ({ request }) => {
     request.headers.get("cookie")
   );
 
+  const user: User | undefined = await session.get("user");
+
   const csrf = createAuthenticityToken(session);
 
   return json(
-    { csrf },
+    { csrf, user },
     {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session),
@@ -49,7 +52,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function App() {
-  const { csrf } = useLoaderData<typeof loader>();
+  const { csrf, user } = useLoaderData<typeof loader>();
+
+  console.log({ user });
 
   return (
     <html lang="en">

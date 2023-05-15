@@ -1,13 +1,14 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { useMemo } from "react";
-import { Card, Stats } from "react-daisyui";
+import { Card } from "react-daisyui";
+import { FaPlus } from "react-icons/fa";
 
 import { AccountController } from "~/controllers/AccountController";
 
 import type Account from "~/models/Account";
 
+import { ButtonLink } from "~/components/ButtonLink";
 import { MoneyFormat } from "~/components/MoneyFormat";
 
 import StatsBar from "./StatsBar";
@@ -28,6 +29,17 @@ export default function Index() {
   return (
     <div className="flex flex-col gap-2">
       <StatsBar accounts={accounts} />
+      <div className="fixed bottom-4 right-4">
+        <ButtonLink
+          shape="circle"
+          size="lg"
+          color="primary"
+          to="/accounts/new"
+          className="text-3xl"
+        >
+          <FaPlus />
+        </ButtonLink>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {accounts.map((account: Account) => (
           <Link
