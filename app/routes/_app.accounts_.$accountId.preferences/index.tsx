@@ -1,9 +1,12 @@
+import type { Account } from "@prisma/client";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { isNil } from "ramda";
 import { Button, Card } from "react-daisyui";
 import { notFound } from "remix-utils";
+import { match } from "ts-pattern";
 import zod from "zod";
 import AccountType from "~/refs/AccountType";
 
@@ -13,6 +16,7 @@ import { AccountController } from "~/controllers/AccountController";
 
 import { FormControl } from "~/components/FormControl";
 import { SelectControl } from "~/components/SelectControl";
+import TimedButton from "~/components/TimedButton";
 
 type LoaderData = {
   account: Account;
@@ -69,6 +73,27 @@ export const AppAccounts$accountIdPreferences = () => {
           </Card.Body>
         </Card>
       </Form>
+
+      <Form method="DELETE">
+        <Card className="bg-error/60 text-error-content">
+          <Card.Body>
+            <Card.Title className="flex flex-col sm:flex-row justify-between items-center">
+              <h1 className="text-2xl">Danger Zone</h1>
+            </Card.Title>
+            <div className="flex flex-col gap-2">
+              <TimedButton
+                name="action"
+                value="delete-account"
+                type="submit"
+                color="error"
+                duration={5000}
+              >
+                Delete account
+              </TimedButton>
+            </div>
+          </Card.Body>
+        </Card>
+      </Form>
     </>
   );
 };
@@ -79,19 +104,34 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const data = Object.fromEntries(formData.entries());
 
-  const cleanData = zod
-    .object({
-      name: zod.string(),
-      accountType: zod.nativeEnum(AccountType),
+  return match(request.method)
+    .with("DELETE", async () => {
+      const { accountId } = zod
+        .object({ accountId: zod.string() })
+        .parse(params);
+
+      const accountController = new AccountController();
+      await accountController.deleteAccount(accountId, user.id);
+
+      return redirect("/");
     })
-    .parse(data);
+    .otherwise(async () => {
+      const cleanData = zod
+        .object({
+          name: zod.string(),
+          accountType: zod.nativeEnum(AccountType),
+        })
+        .parse(data);
 
-  const { accountId } = zod.object({ accountId: zod.string() }).parse(params);
+      const { accountId } = zod
+        .object({ accountId: zod.string() })
+        .parse(params);
 
-  const accountController = new AccountController();
-  await accountController.updateAccount(accountId, user.id, cleanData);
+      const accountController = new AccountController();
+      await accountController.updateAccount(accountId, user.id, cleanData);
 
-  return json({});
+      return json({});
+    });
 };
 
 export default AppAccounts$accountIdPreferences;

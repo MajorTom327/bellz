@@ -6,6 +6,16 @@ import { prisma } from "~/services.server/db";
 import type Transaction from "~/models/Transaction";
 
 export class AccountController {
+  deleteAccount(accountId: string, id: string) {
+    return prisma.account.deleteMany({
+      where: {
+        id: accountId,
+        owner: {
+          id,
+        },
+      },
+    });
+  }
   updateAccount(
     accountId: string,
     id: string,
