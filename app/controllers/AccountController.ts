@@ -1,9 +1,24 @@
 import type { Account } from "@prisma/client";
+import { pathOr } from "ramda";
 import { prisma } from "~/services.server/db";
 
 import type Transaction from "~/models/Transaction";
 
 export class AccountController {
+  createAccount(data: { label: string; balance: number; userId: string }) {
+    return prisma.account.create({
+      data: {
+        name: data.label,
+        balance: data.balance,
+        owner: {
+          connect: {
+            id: data.userId,
+          },
+        },
+      },
+    });
+  }
+
   getAccountsForUser(userId: string): Promise<Account[]> {
     return prisma.account.findMany({
       where: {
@@ -22,15 +37,39 @@ export class AccountController {
 
   addTransactionToAccount(
     accountId: string,
-    transaction: Transaction
+    transaction: Omit<Transaction, "accountId">
   ): Promise<Transaction> {
-    return prisma.transaction.create({
-      data: {
-        accountId,
-        amount: transaction.amount,
-        description: transaction.description,
-        date: transaction.date,
-      },
+    return prisma.$transaction(async (tx) => {
+      const tr = await tx.transaction.create({
+        data: {
+          accountId,
+          amount: transaction.amount,
+          description: transaction.description,
+          date: transaction.date,
+        },
+      });
+
+      // * Get the new balance for the account
+      const totalAccountValue = await tx.transaction.aggregate({
+        _sum: {
+          amount: true,
+        },
+        where: {
+          accountId,
+        },
+      });
+
+      const sumValue = totalAccountValue._sum.amount || 0;
+      await tx.account.update({
+        where: {
+          id: accountId,
+        },
+        data: {
+          balance: sumValue,
+        },
+      });
+
+      return tr;
     });
   }
 }

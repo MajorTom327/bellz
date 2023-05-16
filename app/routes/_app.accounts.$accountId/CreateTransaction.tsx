@@ -2,7 +2,7 @@ import { Form, useNavigation, useParams } from "@remix-run/react";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
-import { useAuthenticityToken } from "remix-utils";
+import { AuthenticityTokenInput } from "remix-utils";
 import zod from "zod";
 
 import { FormControl } from "~/components/FormControl";
@@ -11,7 +11,6 @@ export const CreateTransaction: React.FC = () => {
   const params = useParams();
   const { accountId } = zod.object({ accountId: zod.string() }).parse(params);
   const [isOpen, setOpen] = useState(false);
-  const csrf = useAuthenticityToken();
 
   const transition = useNavigation();
   const formRef = useRef<HTMLFormElement>(null);
@@ -70,7 +69,7 @@ export const CreateTransaction: React.FC = () => {
               name="date"
               type="date"
             />
-            <input type="hidden" name="csrf" value={csrf} />
+            <AuthenticityTokenInput />
           </Modal.Body>
           <Modal.Actions>
             <Button color="primary" type="submit" disabled={isSubmitting}>

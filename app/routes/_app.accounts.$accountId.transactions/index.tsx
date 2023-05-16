@@ -1,6 +1,8 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@vercel/remix";
+import { verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
+import { getSession } from "~/services.server/session";
 
 import { AccountController } from "~/controllers/AccountController";
 
@@ -17,7 +19,8 @@ export const AppAccounts$accountIdTransactions = () => {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  console.log("action create transaction");
+  let session = await getSession(request.headers.get("Cookie"));
+  await verifyAuthenticityToken(request, session);
 
   const { accountId } = zod
     .object({

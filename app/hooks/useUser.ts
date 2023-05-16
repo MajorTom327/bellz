@@ -2,9 +2,9 @@ import type { User } from "@prisma/client";
 import { isNil } from "ramda";
 import type { loader } from "~/root";
 
-import { useMatchesData } from "./useMatchesData";
+import type { UserSession } from "~/models/User";
 
-type UserSession = Omit<User, "password">;
+import { useMatchesData } from "./useMatchesData";
 
 export function useOptionalUser(): UserSession | undefined {
   const data = useMatchesData<typeof loader>("root");

@@ -23,6 +23,8 @@ model User {
 model Account {
   id      String @id @default(uuid())
   name    String
+  balance Int
+
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id])
 
