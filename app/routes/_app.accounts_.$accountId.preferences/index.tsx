@@ -5,10 +5,11 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { isNil } from "ramda";
 import { Button, Card } from "react-daisyui";
-import { notFound } from "remix-utils";
+import { notFound, verifyAuthenticityToken } from "remix-utils";
 import { match } from "ts-pattern";
 import zod from "zod";
 import AccountType from "~/refs/AccountType";
+import { getSession } from "~/services.server/session";
 
 import ensureUser from "~/lib/authorization/ensureUser";
 
@@ -101,6 +102,11 @@ export const AppAccounts$accountIdPreferences = () => {
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await ensureUser(request);
   const formData = await request.formData();
+
+  await verifyAuthenticityToken(
+    request,
+    await getSession(request.headers.get("Cookie"))
+  );
 
   const data = Object.fromEntries(formData.entries());
 

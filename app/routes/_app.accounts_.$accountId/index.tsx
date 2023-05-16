@@ -12,8 +12,6 @@ import { AccountController } from "~/controllers/AccountController";
 
 import { MoneyFormat } from "~/components/MoneyFormat";
 
-import AppAccounts$accountId from "../_app.accounts_.$accountId._index";
-
 type LoaderData = {};
 
 export const loader: LoaderFunction = async ({ request, params }) => {

@@ -1,4 +1,8 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LoaderFunction,
+  V2_MetaFunction,
+} from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
@@ -12,6 +16,10 @@ import ensureUser from "~/lib/authorization/ensureUser";
 import { AccountController } from "~/controllers/AccountController";
 
 type LoaderData = {};
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Bellz - Accounts" }];
+};
 
 export const loader: LoaderFunction = async () => {
   return json<LoaderData>({});
@@ -33,7 +41,6 @@ export const action: ActionFunction = async ({ request }) => {
       balance: zod.coerce.number().transform((value) => value * 100),
       accountType: zod.nativeEnum(AccountType),
     })
-
     .parse(data);
 
   const accountController = new AccountController();

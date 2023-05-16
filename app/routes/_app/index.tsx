@@ -28,6 +28,13 @@ export const App = () => {
           <Menu horizontal className="p-0">
             {user ? (
               <>
+                {/* Hack: Visual Square for the first item */}
+                <Menu.Item></Menu.Item>
+                <Menu.Item>
+                  <ButtonLink to="/subscriptions" color="ghost" prefetch="none">
+                    Subscriptions
+                  </ButtonLink>
+                </Menu.Item>
                 <Menu.Item>
                   <ButtonLink to="/profile" color="ghost" prefetch="none">
                     Profile

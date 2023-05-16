@@ -1,10 +1,14 @@
 import type { Profile } from "@prisma/client";
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LoaderFunction,
+  V2_MetaFunction,
+} from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { prop, propOr } from "ramda";
 import { Button, Card } from "react-daisyui";
-import { AuthenticityTokenInput } from "remix-utils";
+import { AuthenticityTokenInput, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
 import { commitSession, getSession } from "~/services.server/session";
 
@@ -17,6 +21,10 @@ import { FormControl } from "~/components/FormControl";
 import { useOptionalUser } from "~/hooks/useUser";
 
 type LoaderData = {};
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Bellz - Profile" }];
+};
 
 export const loader: LoaderFunction = async () => {
   return json<LoaderData>({});
@@ -55,6 +63,11 @@ export const AppProfile = () => {
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await ensureUser(request);
+
+  await verifyAuthenticityToken(
+    request,
+    await getSession(request.headers.get("Cookie"))
+  );
 
   const session = await getSession(request.headers.get("Cookie"));
 

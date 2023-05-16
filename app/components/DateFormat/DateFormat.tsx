@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import React from "react";
 
 type Props = {
-  value: Date;
+  value?: Date | null;
 };
 
 export const DateFormat: React.FC<Props> = ({ value }) => {
