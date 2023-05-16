@@ -24,6 +24,7 @@ model Account {
   id      String @id @default(uuid())
   name    String
   balance Int
+  type    String
 
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id])

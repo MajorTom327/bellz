@@ -1,9 +1,18 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Outlet } from "@remix-run/react";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useParams,
+} from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { verifyAuthenticityToken } from "remix-utils";
+import classNames from "classnames";
+import { Tabs } from "react-daisyui";
+import { badRequest, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
+import AccountType from "~/refs/AccountType";
 import { getSession } from "~/services.server/session";
 
 import ensureUser from "~/lib/authorization/ensureUser";
@@ -16,10 +25,39 @@ export const loader: LoaderFunction = async () => {
   return json<LoaderData>({});
 };
 
-export const AppAccountsNew = () => {
+export const AppAccounts = () => {
+  const params = useParams();
+  const accountId = zod
+    .object({ accountId: zod.string() })
+    .parse(params).accountId;
+
   return (
     <>
-      <Outlet />
+      <div className="flex flex-col gap-2">
+        <div className="tabs tabs-boxed">
+          <NavLink
+            to={`/accounts/${accountId}`}
+            end
+            prefetch="intent"
+            className={({ isActive }) =>
+              classNames("tab tab-md", { "tab-active": isActive })
+            }
+          >
+            Accounts
+          </NavLink>
+          <NavLink
+            to={`/accounts/${accountId}/preferences`}
+            end
+            prefetch="intent"
+            className={({ isActive }) =>
+              classNames("tab tab-md", { "tab-active": isActive })
+            }
+          >
+            Preferences
+          </NavLink>
+        </div>
+        <Outlet />
+      </div>
     </>
   );
 };
@@ -36,6 +74,7 @@ export const action: ActionFunction = async ({ request }) => {
     .object({
       label: zod.string().min(1).max(255),
       balance: zod.coerce.number().transform((value) => value * 100),
+      accountType: zod.nativeEnum(AccountType),
     })
 
     .parse(data);
@@ -47,6 +86,7 @@ export const action: ActionFunction = async ({ request }) => {
       label: account.label,
       balance: account.balance,
       userId: user.id,
+      type: account.accountType,
     })
     .then((account) => {
       console.log("Account created", account);
@@ -65,8 +105,8 @@ export const action: ActionFunction = async ({ request }) => {
     })
     .catch((error) => {
       console.log("Account creation failed", error);
-      return redirect("/accounts/new");
+      return badRequest({ message: error.message });
     });
 };
 
-export default AppAccountsNew;
+export default AppAccounts;

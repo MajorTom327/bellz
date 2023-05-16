@@ -2,7 +2,10 @@ import type { Account } from "@prisma/client";
 import { Link } from "@remix-run/react";
 import classNames from "classnames";
 import React from "react";
-import { Card } from "react-daisyui";
+import { Badge, Card } from "react-daisyui";
+import type AccountType from "~/refs/AccountType";
+
+import { getAccountIcon } from "~/lib/getAccountIcon";
 
 import MoneyFormat from "~/components/MoneyFormat";
 
@@ -24,7 +27,13 @@ export const AccountCard: React.FC<Props> = ({ account }) => {
         <Card className={classes}>
           <Card.Body>
             <Card.Title className="flex items-center justify-between">
-              <h1 className="text-2xl font-primary">{account.name}</h1>
+              <div className="flex gap-4 items-center">
+                <div className="bg-primary text-primary-content rounded-full p-2">
+                  {getAccountIcon(account.type as AccountType)}
+                </div>
+
+                <h1 className="text-2xl font-primary">{account.name}</h1>
+              </div>
               <h2 className="text-xl font-primary">
                 <MoneyFormat value={account.balance} />
               </h2>

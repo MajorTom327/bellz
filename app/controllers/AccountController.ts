@@ -1,15 +1,22 @@
 import type { Account } from "@prisma/client";
 import { pathOr } from "ramda";
+import type AccountType from "~/refs/AccountType";
 import { prisma } from "~/services.server/db";
 
 import type Transaction from "~/models/Transaction";
 
 export class AccountController {
-  createAccount(data: { label: string; balance: number; userId: string }) {
+  createAccount(data: {
+    label: string;
+    balance: number;
+    userId: string;
+    type: AccountType;
+  }) {
     return prisma.account.create({
       data: {
         name: data.label,
         balance: data.balance,
+        type: data.type,
         owner: {
           connect: {
             id: data.userId,

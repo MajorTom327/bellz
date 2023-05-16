@@ -1,4 +1,5 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { json } from "@vercel/remix";
 import { verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
@@ -39,9 +40,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const accountController = new AccountController();
   await accountController.addTransactionToAccount(accountId, transaction);
 
-  return json({
-    transaction,
-  });
+  return redirect("/accounts/" + accountId);
 };
 
 export default AppAccounts$accountIdTransactions;

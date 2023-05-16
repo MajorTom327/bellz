@@ -1,29 +1,20 @@
 import React, { useId } from "react";
-import type { InputProps } from "react-daisyui";
-import { Input } from "react-daisyui";
+import type { SelectProps } from "react-daisyui";
+import { Select } from "react-daisyui";
 
-type Props = InputProps & {
-  type?:
-    | "text"
-    | "password"
-    | "email"
-    | "number"
-    | "date"
-    | "time"
-    | "datetime-local";
+type Props = SelectProps & {
   label: string;
   name: string;
   required?: boolean;
   disabled?: boolean;
-  defaultValue?: any;
 };
 
-export const FormControl: React.FC<Props> = ({
-  type,
+export const SelectControl: React.FC<Props> = ({
   label,
   name,
   required,
   disabled,
+  children,
   ...props
 }) => {
   const inputId = useId();
@@ -33,22 +24,21 @@ export const FormControl: React.FC<Props> = ({
         <label className="label" htmlFor={inputId}>
           <span className="label-text">{label}</span>
         </label>
-        <Input
+        <Select
           {...props}
           id={inputId}
-          type={type}
           name={name}
           required={required}
           placeholder={label}
           disabled={disabled}
-        />
+        >
+          {children}
+        </Select>
       </div>
     </>
   );
 };
 
-FormControl.defaultProps = {
-  type: "text",
-};
+SelectControl.defaultProps = {};
 
-export default FormControl;
+export default SelectControl;

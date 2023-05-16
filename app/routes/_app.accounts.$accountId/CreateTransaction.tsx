@@ -17,6 +17,11 @@ export const CreateTransaction: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
 
   const isSubmitting = transition.state === "submitting";
+  const defaultDate =
+    DateTime.local()
+      .startOf("minute")
+      .startOf("second")
+      .toISO({ includeOffset: false }) ?? undefined;
 
   const handleCloseModal = () => {
     setOpen(false);
@@ -68,8 +73,8 @@ export const CreateTransaction: React.FC = () => {
               disabled={isSubmitting}
               label="Date"
               name="date"
-              type="date"
-              defaultValue={DateTime.local().toISODate() ?? undefined}
+              type="datetime-local"
+              defaultValue={defaultDate}
             />
             <AuthenticityTokenInput />
           </Modal.Body>

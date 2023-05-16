@@ -30,7 +30,7 @@ export const StatsBar: React.FC<Props> = ({ accounts }) => {
       <div className="w-full">
         <Card>
           <Card.Body>
-            <Stats>
+            <Stats className="stats-vertical lg:stats-horizontal">
               <Stats.Stat>
                 <Stat.Item variant="title">Number of active account:</Stat.Item>
                 <Stat.Item variant="value">{accounts.length}</Stat.Item>

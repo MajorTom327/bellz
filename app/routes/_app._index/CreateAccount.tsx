@@ -1,10 +1,12 @@
 import { Form } from "@remix-run/react";
 import React, { useState } from "react";
-import { Button, Modal } from "react-daisyui";
+import { Button, Modal, Select } from "react-daisyui";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
+import AccountType from "~/refs/AccountType";
 
 import { FormControl } from "~/components/FormControl";
+import SelectControl from "~/components/SelectControl";
 
 type Props = {};
 
@@ -43,6 +45,12 @@ export const CreateAccount: React.FC<Props> = ({}) => {
           <Modal.Body>
             <FormControl label="Account label" name="label" />
             <FormControl label="Initial Balance" name="balance" type="number" />
+            <SelectControl label="Account Type" name="accountType">
+              <option value={AccountType.Cash}>Cash</option>
+              <option value={AccountType.Safe}>Safe</option>
+              <option value={AccountType.Wallet}>Wallet</option>
+              <option value={AccountType.Bank}>Bank</option>
+            </SelectControl>
             <AuthenticityTokenInput />
           </Modal.Body>
           <Modal.Actions>
