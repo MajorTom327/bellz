@@ -31,6 +31,11 @@ export const App = () => {
                 {/* Hack: Visual Square for the first item */}
                 <Menu.Item></Menu.Item>
                 <Menu.Item>
+                  <ButtonLink to="/converter" color="ghost" prefetch="none">
+                    Converter
+                  </ButtonLink>
+                </Menu.Item>
+                <Menu.Item>
                   <ButtonLink to="/subscriptions" color="ghost" prefetch="none">
                     Subscriptions
                   </ButtonLink>

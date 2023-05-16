@@ -1,4 +1,3 @@
-import CurrencyEnum from "~/refs/CurrencyEnum";
 import type OccurenceEnum from "~/refs/OccurenceEnum";
 import { prisma } from "~/services.server/db";
 
