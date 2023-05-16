@@ -5,8 +5,10 @@ import { Button, Modal } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
 import zod from "zod";
+import CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { FormControl } from "~/components/FormControl";
+import { SelectControl } from "~/components/SelectControl";
 
 export const CreateTransaction: React.FC = () => {
   const params = useParams();

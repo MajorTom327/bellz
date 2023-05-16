@@ -27,6 +27,7 @@ model Profile {
   id String @id @default(uuid())
 
   objective Int @default(0)
+  currency  String @default("EUR")
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -40,6 +41,7 @@ model Account {
   name    String
   balance Int
   type    String
+  currency String @default("EUR")
 
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
@@ -69,6 +71,7 @@ model Subscription {
 
   name   String
   amount Int
+  currency String @default("EUR")
 
   occurence     String
   lastExecution DateTime?

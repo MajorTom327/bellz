@@ -1,6 +1,7 @@
 import type { Account } from "@prisma/client";
 import { pathOr } from "ramda";
 import type AccountType from "~/refs/AccountType";
+import type CurrencyEnum from "~/refs/CurrencyEnum";
 import { prisma } from "~/services.server/db";
 
 import type Transaction from "~/models/Transaction";
@@ -47,12 +48,14 @@ export class AccountController {
     balance: number;
     userId: string;
     type: AccountType;
+    currency: CurrencyEnum;
   }) {
     return prisma.account.create({
       data: {
         name: data.label,
         balance: data.balance,
         type: data.type,
+        currency: data.currency,
         owner: {
           connect: {
             id: data.userId,

@@ -1,4 +1,4 @@
-import { Subscription } from "@prisma/client";
+import type { Subscription } from "@prisma/client";
 import type {
   ActionFunction,
   LoaderFunction,
@@ -6,14 +6,18 @@ import type {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
+import Bluebird from "bluebird";
+import { pathOr } from "ramda";
 import { useState } from "react";
 import { Button, Card } from "react-daisyui";
 import { jsonHash, promiseHash, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
+import CurrencyEnum from "~/refs/CurrencyEnum";
 import OccurenceEnum from "~/refs/OccurenceEnum";
 import { getSession } from "~/services.server/session";
 
 import ensureUser from "~/lib/authorization/ensureUser";
+import FinanceApi from "~/lib/finance";
 
 import { AccountController } from "~/controllers/AccountController";
 import SubscriptionController from "~/controllers/SubscriptionController";
@@ -26,14 +30,41 @@ type LoaderData = {};
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await ensureUser(request);
+  const currency = pathOr(CurrencyEnum.EUR, ["profile", "currency"], user);
 
   const accountController = new AccountController();
   const subscriptionController = new SubscriptionController();
 
+  const subscriptions = await subscriptionController.getSubscriptionsForUser(
+    user.id
+  );
+
+  const financeApi = new FinanceApi();
+  const totalBalance = await Bluebird.reduce(
+    subscriptions,
+    async (acc: number, subscription: Subscription) => {
+      const { amount, currency: toCurrency } = subscription;
+      if (toCurrency === currency) {
+        return acc + amount;
+      }
+
+      const rate = await financeApi.getExchangeRate(
+        toCurrency as CurrencyEnum,
+        currency
+      );
+
+      console.log("Rate", { rate });
+
+      return acc + amount * rate;
+    },
+    0
+  );
+
   return json(
     await promiseHash({
       accounts: accountController.getAccountsForUser(user.id),
-      subscriptions: subscriptionController.getSubscriptionsForUser(user.id),
+      subscriptions: Promise.resolve(subscriptions),
+      totalBalance: Promise.resolve(totalBalance),
     })
   );
 };
@@ -44,7 +75,8 @@ export const meta: V2_MetaFunction = () => {
 
 export const AppSubscriptions = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { subscriptions, accounts } = useLoaderData<typeof loader>();
+  const { subscriptions, accounts, totalBalance } =
+    useLoaderData<typeof loader>();
 
   const handleOpenCreate = () => setIsOpen(true);
   const handleCloseCreate = () => setIsOpen(false);
@@ -52,7 +84,10 @@ export const AppSubscriptions = () => {
   return (
     <>
       <div className="flex flex-col gap-2">
-        <SubscriptionStats subscriptions={subscriptions} />
+        <SubscriptionStats
+          subscriptions={subscriptions}
+          totalBalance={totalBalance}
+        />
         <Card>
           <Card.Body>
             <Card.Title className="flex flex-col sm:flex-row justify-between items-center">
@@ -88,13 +123,12 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData.entries());
 
-  console.log(data);
-
   const cleanData = zod
     .object({
       name: zod.string(),
       amount: zod.coerce.number().transform((val) => val * 100),
       nextExecution: zod.coerce.date(),
+      currency: zod.nativeEnum(CurrencyEnum),
       accountId: zod.string(),
     })
     .parse(data);
@@ -109,6 +143,7 @@ export const action: ActionFunction = async ({ request }) => {
       amount: cleanData.amount,
       occurence: OccurenceEnum.MONTHLY,
       nextExecution: cleanData.nextExecution,
+      currency: cleanData.currency,
     }
   );
 

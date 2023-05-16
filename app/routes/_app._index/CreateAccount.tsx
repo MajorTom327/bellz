@@ -1,17 +1,23 @@
 import { Form } from "@remix-run/react";
+import { pathOr } from "ramda";
 import React, { useState } from "react";
 import { Button, Modal, Select } from "react-daisyui";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
 import AccountType from "~/refs/AccountType";
+import CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { FormControl } from "~/components/FormControl";
 import SelectControl from "~/components/SelectControl";
+
+import { useOptionalUser } from "~/hooks/useUser";
 
 type Props = {};
 
 export const CreateAccount: React.FC<Props> = ({}) => {
   const [showModal, setShowModal] = useState(false);
+  const user = useOptionalUser();
+  const currency = pathOr(CurrencyEnum.EUR, ["profile", "currency"], user);
 
   const handleClose = () => setShowModal(false);
   const handleOpenModal = () => {
@@ -55,6 +61,19 @@ export const CreateAccount: React.FC<Props> = ({}) => {
               <option value={AccountType.Wallet}>Wallet</option>
               <option value={AccountType.Bank}>Bank</option>
             </SelectControl>
+
+            <SelectControl
+              label="Currency"
+              name="currency"
+              defaultValue={currency}
+            >
+              {Object.entries(CurrencyEnum).map(([key, value]) => (
+                <option key={key} value={value}>
+                  {value}
+                </option>
+              ))}
+            </SelectControl>
+
             <AuthenticityTokenInput />
           </Modal.Body>
           <Modal.Actions>

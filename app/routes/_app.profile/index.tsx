@@ -10,6 +10,7 @@ import { prop, propOr } from "ramda";
 import { Button, Card } from "react-daisyui";
 import { AuthenticityTokenInput, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
+import CurrencyEnum from "~/refs/CurrencyEnum";
 import { commitSession, getSession } from "~/services.server/session";
 
 import ensureUser from "~/lib/authorization/ensureUser";
@@ -17,6 +18,7 @@ import ensureUser from "~/lib/authorization/ensureUser";
 import UserController from "~/controllers/UserController";
 
 import { FormControl } from "~/components/FormControl";
+import { SelectControl } from "~/components/SelectControl";
 
 import { useOptionalUser } from "~/hooks/useUser";
 
@@ -50,6 +52,18 @@ export const AppProfile = () => {
               defaultValue={propOr(0, "objective", profile) / 100}
               required
             />
+            <SelectControl
+              label="Currency"
+              name="currency"
+              defaultValue={propOr(CurrencyEnum.EUR, "currency", profile)}
+            >
+              {Object.entries(CurrencyEnum).map(([key, value]) => (
+                <option key={key} value={value}>
+                  {value}
+                </option>
+              ))}
+            </SelectControl>
+
             <AuthenticityTokenInput />
             <Card.Actions className="flex justify-end">
               <Button type="submit">Save</Button>
@@ -80,6 +94,7 @@ export const action: ActionFunction = async ({ request }) => {
         .number()
         .min(1)
         .transform((value) => value * 100),
+      currency: zod.nativeEnum(CurrencyEnum),
     })
     .parse(data);
 

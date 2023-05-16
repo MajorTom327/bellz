@@ -1,3 +1,4 @@
+import CurrencyEnum from "~/refs/CurrencyEnum";
 import type OccurenceEnum from "~/refs/OccurenceEnum";
 import { prisma } from "~/services.server/db";
 
@@ -25,11 +26,13 @@ export class SubscriptionController {
       name,
       amount,
       occurence,
+      currency,
       nextExecution,
     }: {
       name: string;
       amount: number;
       occurence: OccurenceEnum;
+      currency: CurrencyEnum;
       nextExecution: Date;
     }
   ) {
@@ -39,6 +42,7 @@ export class SubscriptionController {
         amount,
         occurence,
         nextExecution,
+        currency,
         account: {
           connect: {
             id: accountId,

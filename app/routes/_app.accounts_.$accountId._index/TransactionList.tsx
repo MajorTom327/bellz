@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React from "react";
 import { Table } from "react-daisyui";
+import type CurrencyEnum from "~/refs/CurrencyEnum";
 
 import type Transaction from "~/models/Transaction";
 
@@ -9,9 +10,13 @@ import { MoneyFormat } from "~/components/MoneyFormat";
 
 type Props = {
   transactions: Transaction[];
+  currency: CurrencyEnum;
 };
 
-export const TransactionList: React.FC<Props> = ({ transactions }) => {
+export const TransactionList: React.FC<Props> = ({
+  transactions,
+  currency,
+}) => {
   return (
     <>
       <Table className="w-full">
@@ -35,7 +40,7 @@ export const TransactionList: React.FC<Props> = ({ transactions }) => {
                   "text-success": transaction.amount > 0,
                 })}
               >
-                <MoneyFormat value={transaction.amount} />
+                <MoneyFormat value={transaction.amount} currency={currency} />
               </td>
             </tr>
           ))}

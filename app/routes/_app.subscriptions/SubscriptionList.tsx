@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import React from "react";
 import { Table } from "react-daisyui";
 import type AccountType from "~/refs/AccountType";
+import type CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { getAccountIcon } from "~/lib/getAccountIcon";
 
@@ -49,7 +50,10 @@ export const SubscriptionList: React.FC<Props> = ({
             <tr key={subscription.id}>
               <td>{subscription.name}</td>
               <td>
-                <MoneyFormat value={subscription.amount} />
+                <MoneyFormat
+                  value={subscription.amount}
+                  currency={subscription.currency as CurrencyEnum}
+                />
               </td>
               <td>{subscription.occurence}</td>
               <td>

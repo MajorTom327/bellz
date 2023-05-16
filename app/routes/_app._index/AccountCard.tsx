@@ -4,6 +4,7 @@ import classNames from "classnames";
 import React from "react";
 import { Badge, Card } from "react-daisyui";
 import type AccountType from "~/refs/AccountType";
+import type CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { getAccountIcon } from "~/lib/getAccountIcon";
 
@@ -35,7 +36,10 @@ export const AccountCard: React.FC<Props> = ({ account }) => {
                 <h1 className="text-2xl font-primary">{account.name}</h1>
               </div>
               <h2 className="text-xl font-primary">
-                <MoneyFormat value={account.balance} />
+                <MoneyFormat
+                  value={account.balance}
+                  currency={account.currency as CurrencyEnum}
+                />
               </h2>
             </Card.Title>
           </Card.Body>

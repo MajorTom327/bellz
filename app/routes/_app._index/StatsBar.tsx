@@ -1,8 +1,12 @@
+import type { Account } from "@prisma/client";
+import Bluebird from "bluebird";
 import { pathOr } from "ramda";
-import React, { useMemo } from "react";
+import React, { Suspense, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { Card, Progress, Stats } from "react-daisyui";
+import CurrencyEnum from "~/refs/CurrencyEnum";
 
-import type Account from "~/models/Account";
+import FinanceApi from "~/lib/finance";
 
 import MoneyFormat from "~/components/MoneyFormat";
 import { PercentFormat } from "~/components/PercentFormat";
@@ -11,24 +15,20 @@ import { useOptionalUser } from "~/hooks/useUser";
 
 type Props = {
   accounts: Account[];
+  totalBalance: number;
 };
 
 const Stat = Stats.Stat;
 
-export const StatsBar: React.FC<Props> = ({ accounts }) => {
+export const StatsBar: React.FC<Props> = ({ accounts, totalBalance }) => {
   const user = useOptionalUser();
-
-  const totalAmount: number = useMemo(() => {
-    return accounts.reduce((acc: number, account: Account) => {
-      return acc + account.balance;
-    }, 0);
-  }, [accounts]);
+  const currency = pathOr(CurrencyEnum.EUR, ["profile", "currency"], user);
 
   const objective = pathOr(0, ["profile", "objective"], user);
 
   const objective_percent = useMemo(() => {
-    return (totalAmount || 0) / objective;
-  }, [totalAmount]);
+    return (totalBalance || 0) / objective;
+  }, [totalBalance, objective]);
 
   return (
     <>
@@ -43,20 +43,20 @@ export const StatsBar: React.FC<Props> = ({ accounts }) => {
               <Stats.Stat>
                 <Stat.Item variant="title">Total Balance:</Stat.Item>
                 <Stat.Item variant="value">
-                  <MoneyFormat value={totalAmount} />
+                  <MoneyFormat value={totalBalance} currency={currency} />
                 </Stat.Item>
                 <Stat.Item variant="desc">21% more than last month</Stat.Item>
               </Stats.Stat>
               <Stats.Stat>
                 <Stat.Item variant="title">Current objective:</Stat.Item>
                 <Stat.Item variant="value">
-                  <MoneyFormat value={objective} />
+                  <MoneyFormat value={objective} currency={currency} />
                 </Stat.Item>
                 <Stat.Item variant="desc">
                   <div className="flex flex-col gap-1 items-center">
                     <Progress
                       color="accent"
-                      value={totalAmount}
+                      value={totalBalance}
                       max={objective}
                     />
                     <PercentFormat value={objective_percent} />

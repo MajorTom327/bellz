@@ -49,7 +49,10 @@ export const AppAccounts = () => {
               </div>
 
               <h2 className="text-2xl">
-                <MoneyFormat value={account.balance} />
+                <MoneyFormat
+                  value={account.balance}
+                  currency={account.currency}
+                />
               </h2>
             </Card.Title>
           </Card.Body>

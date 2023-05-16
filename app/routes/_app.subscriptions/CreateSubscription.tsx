@@ -1,13 +1,17 @@
 import type { Account } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import { DateTime } from "luxon";
+import { pathOr } from "ramda";
 import React from "react";
 import { Button, Modal } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
+import CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { FormControl } from "~/components/FormControl";
 import { SelectControl } from "~/components/SelectControl";
+
+import { useOptionalUser } from "~/hooks/useUser";
 
 type Props = {
   open: boolean;
@@ -20,6 +24,9 @@ export const CreateSubscription: React.FC<Props> = ({
   onClose,
   accounts,
 }) => {
+  const user = useOptionalUser();
+  const currency = pathOr(CurrencyEnum.EUR, ["profile", "currency"], user);
+
   return (
     <>
       <Modal open={open} onClickBackdrop={onClose}>
@@ -51,6 +58,18 @@ export const CreateSubscription: React.FC<Props> = ({
                   .toISO({ includeOffset: false }) ?? undefined
               }
             />
+
+            <SelectControl
+              label="Currency"
+              name="currency"
+              defaultValue={currency}
+            >
+              {Object.entries(CurrencyEnum).map(([key, value]) => (
+                <option key={key} value={value}>
+                  {value}
+                </option>
+              ))}
+            </SelectControl>
 
             <SelectControl name="accountId" label="Account">
               {accounts.map((account: Account) => (

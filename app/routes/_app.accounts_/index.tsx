@@ -9,6 +9,7 @@ import { json } from "@vercel/remix";
 import { badRequest, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
 import AccountType from "~/refs/AccountType";
+import CurrencyEnum from "~/refs/CurrencyEnum";
 import { getSession } from "~/services.server/session";
 
 import ensureUser from "~/lib/authorization/ensureUser";
@@ -40,6 +41,7 @@ export const action: ActionFunction = async ({ request }) => {
       label: zod.string().min(1).max(255),
       balance: zod.coerce.number().transform((value) => value * 100),
       accountType: zod.nativeEnum(AccountType),
+      currency: zod.nativeEnum(CurrencyEnum),
     })
     .parse(data);
 
@@ -51,9 +53,9 @@ export const action: ActionFunction = async ({ request }) => {
       balance: account.balance,
       userId: user.id,
       type: account.accountType,
+      currency: account.currency,
     })
     .then((account) => {
-      console.log("Account created", account);
       if (account.balance > 0) {
         return accountController
           .addTransactionToAccount(account.id, {

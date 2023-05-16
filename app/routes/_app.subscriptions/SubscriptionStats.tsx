@@ -1,17 +1,27 @@
 import type { Subscription } from "@prisma/client";
+import { pathOr } from "ramda";
 import React from "react";
 import { Card, Stats } from "react-daisyui";
+import CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { MoneyFormat } from "~/components/MoneyFormat";
 
+import { useOptionalUser } from "~/hooks/useUser";
+
 type Props = {
   subscriptions: Subscription[];
+  totalBalance: number;
 };
 
 const { Stat } = Stats;
 
-export const SubscriptionStats: React.FC<Props> = ({ subscriptions }) => {
-  const totalAmount = subscriptions.reduce((red, el) => red + el.amount, 0);
+export const SubscriptionStats: React.FC<Props> = ({
+  subscriptions,
+  totalBalance,
+}) => {
+  const user = useOptionalUser();
+
+  const currency = pathOr(CurrencyEnum.EUR, ["profile", "currency"], user);
 
   return (
     <>
@@ -29,7 +39,7 @@ export const SubscriptionStats: React.FC<Props> = ({ subscriptions }) => {
                 Total amount of subscriptions:
               </Stat.Item>
               <Stat.Item variant="value">
-                <MoneyFormat value={totalAmount} />
+                <MoneyFormat value={totalBalance} currency={currency} />
               </Stat.Item>
             </Stats.Stat>
           </Stats>
