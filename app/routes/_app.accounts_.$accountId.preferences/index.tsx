@@ -86,7 +86,7 @@ export const AppAccounts$accountIdPreferences = () => {
                 value="delete-account"
                 type="submit"
                 color="error"
-                duration={5000}
+                duration={3000}
               >
                 Delete account
               </TimedButton>
