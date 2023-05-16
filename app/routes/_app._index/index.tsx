@@ -1,16 +1,13 @@
+import type { Account } from "@prisma/client";
 import type { LoaderFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { Card } from "react-daisyui";
 
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import { AccountController } from "~/controllers/AccountController";
 
-import type Account from "~/models/Account";
-
-import { MoneyFormat } from "~/components/MoneyFormat";
-
+import AccountCard from "./AccountCard";
 import CreateAccount from "./CreateAccount";
 import StatsBar from "./StatsBar";
 
@@ -34,22 +31,7 @@ export default function Index() {
       <CreateAccount />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {accounts.map((account: Account) => (
-          <Link
-            key={account.id}
-            to={`/accounts/${account.id}`}
-            prefetch="intent"
-          >
-            <Card className="transform transition-all hover:-translate-y-1 hover:shadow-xl cursor-pointer">
-              <Card.Body>
-                <Card.Title className="flex items-center justify-between">
-                  <h1 className="text-2xl font-primary">{account.name}</h1>
-                  <h2 className="text-xl font-primary">
-                    <MoneyFormat value={account.balance} />
-                  </h2>
-                </Card.Title>
-              </Card.Body>
-            </Card>
-          </Link>
+          <AccountCard key={account.id} account={account} />
         ))}
       </div>
     </div>

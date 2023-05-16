@@ -24,6 +24,9 @@ export class AccountController {
       where: {
         ownerId: userId,
       },
+      orderBy: {
+        updatedAt: "desc",
+      },
     });
   }
 
@@ -31,6 +34,9 @@ export class AccountController {
     return prisma.transaction.findMany({
       where: {
         accountId,
+      },
+      orderBy: {
+        date: "desc",
       },
     });
   }

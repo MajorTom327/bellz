@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import React from "react";
 import { Table } from "react-daisyui";
 
@@ -28,7 +29,12 @@ export const TransactionList: React.FC<Props> = ({ transactions }) => {
               <td>
                 <DateFormat value={transaction.date} />
               </td>
-              <td>
+              <td
+                className={classNames("font-semibold text-right", {
+                  "text-error": transaction.amount < 0,
+                  "text-success": transaction.amount > 0,
+                })}
+              >
                 <MoneyFormat value={transaction.amount} />
               </td>
             </tr>

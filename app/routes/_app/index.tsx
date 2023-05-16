@@ -1,9 +1,11 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { Link, Outlet } from "@remix-run/react";
+import { Form, Link, Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { Menu, Navbar } from "react-daisyui";
+import { Button, Menu, Navbar } from "react-daisyui";
 
 import { ButtonLink } from "~/components/ButtonLink";
+
+import { useOptionalUser } from "~/hooks/useUser";
 
 type LoaderData = {};
 
@@ -12,6 +14,8 @@ export const loader: LoaderFunction = async () => {
 };
 
 export const App = () => {
+  const user = useOptionalUser();
+
   return (
     <>
       <Navbar className="bg-base-100 shadow-xl mb-6">
@@ -22,9 +26,19 @@ export const App = () => {
         </div>
         <div className="flex-none">
           <Menu horizontal className="p-0">
-            <Menu.Item>
-              <Link to="/login">Login</Link>
-            </Menu.Item>
+            {user ? (
+              <Form method="post" action="/logout">
+                <Menu.Item>
+                  <Button type="submit" color="ghost">
+                    Logout
+                  </Button>
+                </Menu.Item>
+              </Form>
+            ) : (
+              <Menu.Item>
+                <Link to="/login">Login</Link>
+              </Menu.Item>
+            )}
           </Menu>
         </div>
       </Navbar>

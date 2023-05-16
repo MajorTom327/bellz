@@ -52,9 +52,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function App() {
-  const { csrf, user } = useLoaderData<typeof loader>();
-
-  console.log({ user });
+  const { csrf } = useLoaderData<typeof loader>();
 
   return (
     <html lang="en">

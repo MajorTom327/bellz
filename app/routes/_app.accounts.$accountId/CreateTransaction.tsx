@@ -1,4 +1,5 @@
 import { Form, useNavigation, useParams } from "@remix-run/react";
+import { DateTime } from "luxon";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
@@ -68,6 +69,7 @@ export const CreateTransaction: React.FC = () => {
               label="Date"
               name="date"
               type="date"
+              defaultValue={DateTime.local().toISODate() ?? undefined}
             />
             <AuthenticityTokenInput />
           </Modal.Body>

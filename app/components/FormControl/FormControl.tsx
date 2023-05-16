@@ -1,7 +1,8 @@
 import React, { useId } from "react";
+import type { InputProps } from "react-daisyui";
 import { Input } from "react-daisyui";
 
-type Props = {
+type Props = InputProps & {
   type?: "text" | "password" | "email" | "number" | "date" | "time";
   label: string;
   name: string;
@@ -15,6 +16,7 @@ export const FormControl: React.FC<Props> = ({
   name,
   required,
   disabled,
+  ...props
 }) => {
   const inputId = useId();
   return (
@@ -24,6 +26,7 @@ export const FormControl: React.FC<Props> = ({
           <span className="label-text">{label}</span>
         </label>
         <Input
+          {...props}
           id={inputId}
           type={type}
           name={name}
