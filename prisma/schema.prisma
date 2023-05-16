@@ -71,7 +71,6 @@ model Subscription {
 
   name   String
   amount Int
-  currency String @default("EUR")
 
   occurence     String
   lastExecution DateTime?

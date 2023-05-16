@@ -46,24 +46,24 @@ export const SubscriptionList: React.FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {subscriptions.map((subscription) => (
-            <tr key={subscription.id}>
-              <td>{subscription.name}</td>
-              <td>
-                <MoneyFormat
-                  value={subscription.amount}
-                  currency={subscription.currency as CurrencyEnum}
-                />
-              </td>
-              <td>{subscription.occurence}</td>
-              <td>
-                <DateFormat value={subscription.nextExecution} />
-              </td>
-              <td>
-                {getAccountForSubscription(
-                  subscription,
-                  accounts
-                )((account) => (
+          {subscriptions.map((subscription) =>
+            getAccountForSubscription(
+              subscription,
+              accounts
+            )((account) => (
+              <tr key={subscription.id}>
+                <td>{subscription.name}</td>
+                <td>
+                  <MoneyFormat
+                    value={subscription.amount}
+                    currency={account.currency as CurrencyEnum}
+                  />
+                </td>
+                <td>{subscription.occurence}</td>
+                <td>
+                  <DateFormat value={subscription.nextExecution} />
+                </td>
+                <td>
                   <ButtonLink
                     size="sm"
                     to={`/accounts/${account.id}`}
@@ -72,10 +72,10 @@ export const SubscriptionList: React.FC<Props> = ({
                     {getAccountIcon(account.type as AccountType)}
                     {account.name}
                   </ButtonLink>
-                ))}
-              </td>
-            </tr>
-          ))}
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </Table>
     </>

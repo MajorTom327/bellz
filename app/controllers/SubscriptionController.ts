@@ -8,6 +8,11 @@ export class SubscriptionController {
       where: {
         userId,
       },
+      include: {
+        account: {
+          select: { currency: true },
+        },
+      },
     });
   }
 
@@ -26,13 +31,11 @@ export class SubscriptionController {
       name,
       amount,
       occurence,
-      currency,
       nextExecution,
     }: {
       name: string;
       amount: number;
       occurence: OccurenceEnum;
-      currency: CurrencyEnum;
       nextExecution: Date;
     }
   ) {
@@ -42,7 +45,6 @@ export class SubscriptionController {
         amount,
         occurence,
         nextExecution,
-        currency,
         account: {
           connect: {
             id: accountId,

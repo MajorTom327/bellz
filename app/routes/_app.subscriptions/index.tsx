@@ -42,8 +42,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const financeApi = new FinanceApi();
   const totalBalance = await Bluebird.reduce(
     subscriptions,
-    async (acc: number, subscription: Subscription) => {
-      const { amount, currency: toCurrency } = subscription;
+    async (acc: number, subscription) => {
+      const toCurrency = pathOr(
+        CurrencyEnum.EUR,
+        ["account", "currency"],
+        subscription
+      );
+      const { amount } = subscription;
       if (toCurrency === currency) {
         return acc + amount;
       }
@@ -52,8 +57,6 @@ export const loader: LoaderFunction = async ({ request }) => {
         toCurrency as CurrencyEnum,
         currency
       );
-
-      console.log("Rate", { rate });
 
       return acc + amount * rate;
     },
@@ -128,7 +131,6 @@ export const action: ActionFunction = async ({ request }) => {
       name: zod.string(),
       amount: zod.coerce.number().transform((val) => val * 100),
       nextExecution: zod.coerce.date(),
-      currency: zod.nativeEnum(CurrencyEnum),
       accountId: zod.string(),
     })
     .parse(data);
@@ -143,7 +145,6 @@ export const action: ActionFunction = async ({ request }) => {
       amount: cleanData.amount,
       occurence: OccurenceEnum.MONTHLY,
       nextExecution: cleanData.nextExecution,
-      currency: cleanData.currency,
     }
   );
 

@@ -59,18 +59,6 @@ export const CreateSubscription: React.FC<Props> = ({
               }
             />
 
-            <SelectControl
-              label="Currency"
-              name="currency"
-              defaultValue={currency}
-            >
-              {Object.entries(CurrencyEnum).map(([key, value]) => (
-                <option key={key} value={value}>
-                  {value}
-                </option>
-              ))}
-            </SelectControl>
-
             <SelectControl name="accountId" label="Account">
               {accounts.map((account: Account) => (
                 <option key={account.id} value={account.id}>
