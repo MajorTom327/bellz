@@ -84,6 +84,7 @@ export const action: ActionFunction = async ({ request }) => {
     .getUserByEmailAndPassword(user)
     .then(async (user) => {
       session.set("user", omit(["password"], user));
+
       return redirect("/", {
         headers: {
           "Set-Cookie": await sessionStorage.commitSession(session),

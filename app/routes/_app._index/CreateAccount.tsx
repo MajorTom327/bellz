@@ -14,6 +14,10 @@ export const CreateAccount: React.FC<Props> = ({}) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
+  const handleOpenModal = () => {
+    console.log("Handle open modal");
+    setShowModal(true);
+  };
 
   return (
     <>
@@ -23,7 +27,7 @@ export const CreateAccount: React.FC<Props> = ({}) => {
           size="lg"
           color="primary"
           className="text-3xl"
-          onClick={() => setShowModal(true)}
+          onClick={handleOpenModal}
         >
           <FaPlus />
         </Button>

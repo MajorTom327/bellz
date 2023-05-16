@@ -26,14 +26,16 @@ export default function Index() {
   const { accounts } = useLoaderData<typeof loader>();
 
   return (
-    <div className="flex flex-col gap-2">
-      <StatsBar accounts={accounts} />
-      <CreateAccount />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-        {accounts.map((account: Account) => (
-          <AccountCard key={account.id} account={account} />
-        ))}
+    <>
+      <div className="flex flex-col gap-2">
+        <StatsBar accounts={accounts} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {accounts.map((account: Account) => (
+            <AccountCard key={account.id} account={account} />
+          ))}
+        </div>
       </div>
-    </div>
+      <CreateAccount />
+    </>
   );
 }

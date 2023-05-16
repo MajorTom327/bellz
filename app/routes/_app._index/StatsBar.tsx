@@ -1,3 +1,4 @@
+import { pathOr } from "ramda";
 import React, { useMemo } from "react";
 import { Card, Progress, Stats } from "react-daisyui";
 
@@ -6,6 +7,8 @@ import type Account from "~/models/Account";
 import MoneyFormat from "~/components/MoneyFormat";
 import { PercentFormat } from "~/components/PercentFormat";
 
+import { useOptionalUser } from "~/hooks/useUser";
+
 type Props = {
   accounts: Account[];
 };
@@ -13,13 +16,15 @@ type Props = {
 const Stat = Stats.Stat;
 
 export const StatsBar: React.FC<Props> = ({ accounts }) => {
+  const user = useOptionalUser();
+
   const totalAmount: number = useMemo(() => {
     return accounts.reduce((acc: number, account: Account) => {
       return acc + account.balance;
     }, 0);
   }, [accounts]);
 
-  const objective = 10_000_00;
+  const objective = pathOr(0, ["profile", "objective"], user);
 
   const objective_percent = useMemo(() => {
     return (totalAmount || 0) / objective;

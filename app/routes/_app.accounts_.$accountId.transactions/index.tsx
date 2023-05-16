@@ -9,10 +9,8 @@ import { AccountController } from "~/controllers/AccountController";
 
 import { TransactionSchema } from "~/models/Transaction";
 
-type LoaderData = {};
-
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({});
+export const loader: LoaderFunction = async ({ params }) => {
+  return redirect(`/accounts/${params.accountId}`);
 };
 
 export const AppAccounts$accountIdTransactions = () => {

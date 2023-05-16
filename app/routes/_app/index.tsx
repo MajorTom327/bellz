@@ -27,13 +27,20 @@ export const App = () => {
         <div className="flex-none">
           <Menu horizontal className="p-0">
             {user ? (
-              <Form method="post" action="/logout">
+              <>
                 <Menu.Item>
-                  <Button type="submit" color="ghost">
-                    Logout
-                  </Button>
+                  <ButtonLink to="/profile" color="ghost" prefetch="none">
+                    Profile
+                  </ButtonLink>
                 </Menu.Item>
-              </Form>
+                <Form method="post" action="/logout">
+                  <Menu.Item>
+                    <Button type="submit" color="ghost">
+                      Logout
+                    </Button>
+                  </Menu.Item>
+                </Form>
+              </>
             ) : (
               <Menu.Item>
                 <Link to="/login">Login</Link>

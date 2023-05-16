@@ -6,6 +6,32 @@ import { prisma } from "~/services.server/db";
 import type Transaction from "~/models/Transaction";
 
 export class AccountController {
+  updateAccount(
+    accountId: string,
+    id: string,
+    cleanData: { name: string; accountType: AccountType }
+  ) {
+    return prisma.account.updateMany({
+      where: {
+        id: accountId,
+        owner: {
+          id,
+        },
+      },
+      data: {
+        name: cleanData.name,
+        type: cleanData.accountType,
+      },
+    });
+  }
+
+  getAccount(accountId: string) {
+    return prisma.account.findUnique({
+      where: {
+        id: accountId,
+      },
+    });
+  }
   createAccount(data: {
     label: string;
     balance: number;

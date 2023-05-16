@@ -1,15 +1,7 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import {
-  Link,
-  NavLink,
-  Outlet,
-  useLocation,
-  useParams,
-} from "@remix-run/react";
+import { Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import classNames from "classnames";
-import { Tabs } from "react-daisyui";
 import { badRequest, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
 import AccountType from "~/refs/AccountType";
@@ -25,42 +17,7 @@ export const loader: LoaderFunction = async () => {
   return json<LoaderData>({});
 };
 
-export const AppAccounts = () => {
-  const params = useParams();
-  const accountId = zod
-    .object({ accountId: zod.string() })
-    .parse(params).accountId;
-
-  return (
-    <>
-      <div className="flex flex-col gap-2">
-        <div className="tabs tabs-boxed">
-          <NavLink
-            to={`/accounts/${accountId}`}
-            end
-            prefetch="intent"
-            className={({ isActive }) =>
-              classNames("tab tab-md", { "tab-active": isActive })
-            }
-          >
-            Accounts
-          </NavLink>
-          <NavLink
-            to={`/accounts/${accountId}/preferences`}
-            end
-            prefetch="intent"
-            className={({ isActive }) =>
-              classNames("tab tab-md", { "tab-active": isActive })
-            }
-          >
-            Preferences
-          </NavLink>
-        </div>
-        <Outlet />
-      </div>
-    </>
-  );
-};
+export const AppAccounts = () => <Outlet />;
 
 export const action: ActionFunction = async ({ request }) => {
   // * Create account

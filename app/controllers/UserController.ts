@@ -1,3 +1,4 @@
+import type { Profile } from "@prisma/client";
 import crypto from "node:crypto";
 import { prisma } from "~/services.server/db";
 
@@ -27,6 +28,38 @@ export class UserController {
       where: {
         email,
         password: this.hashPassword(password),
+      },
+      include: {
+        profile: true,
+      },
+    });
+  }
+
+  getUserById(id: string) {
+    return prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        profile: true,
+      },
+    });
+  }
+
+  setProfile(userId: string, profile: Omit<Profile | "id", "userId">) {
+    console.log("setProfile", { userId, profile });
+
+    return prisma.profile.upsert({
+      where: {
+        userId,
+      },
+      update: {
+        ...profile,
+        userId,
+      },
+      create: {
+        ...profile,
+        userId,
       },
     });
   }
