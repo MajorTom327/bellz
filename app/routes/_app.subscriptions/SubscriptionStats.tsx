@@ -58,7 +58,7 @@ export const SubscriptionStats: React.FC<Props> = ({
                   {(totalSubscriptions: number) => (
                     <Stat.Item variant="value">
                       <MoneyFormat
-                        value={totalSubscriptions || 0}
+                        value={(totalSubscriptions || 0) * -1}
                         currency={currency}
                       />
                     </Stat.Item>

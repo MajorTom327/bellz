@@ -7,7 +7,8 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { Button, Menu, Navbar } from "react-daisyui";
+import { Button, Divider, Dropdown, Menu, Navbar } from "react-daisyui";
+import { FaBars } from "react-icons/fa";
 
 import { ButtonLink } from "~/components/ButtonLink";
 import ErrorHandler from "~/components/ErrorHandler";
@@ -26,13 +27,44 @@ export const App = () => {
   return (
     <>
       <Navbar className="bg-base-100 shadow-xl mb-6">
-        <div className="flex-1">
+        <Navbar.Start>
           <ButtonLink color="ghost" to="/">
             Bellz
           </ButtonLink>
-        </div>
-        <div className="flex-none">
-          <Menu horizontal className="p-0">
+        </Navbar.Start>
+        <Navbar.End>
+          <Dropdown end>
+            <Button tabIndex={0} color="ghost" className="lg:hidden">
+              <FaBars />
+            </Button>
+            <Dropdown.Menu tabIndex={0}>
+              {user ? (
+                <>
+                  <Link to="/converter" color="ghost" prefetch="none">
+                    <Dropdown.Item>Converter</Dropdown.Item>
+                  </Link>
+                  <Link to="/subscriptions" color="ghost" prefetch="none">
+                    <Dropdown.Item>Subscriptions & Incomes</Dropdown.Item>
+                  </Link>
+                  <Link to="/profile" color="ghost" prefetch="none">
+                    <Dropdown.Item>Profile</Dropdown.Item>
+                  </Link>
+                  <Divider />
+                  <Form method="post" action="/logout">
+                    <Button type="submit" wide color="ghost">
+                      Logout
+                    </Button>
+                  </Form>
+                </>
+              ) : (
+                <Dropdown.Item>
+                  <Link to="/login">Login</Link>
+                </Dropdown.Item>
+              )}
+            </Dropdown.Menu>
+          </Dropdown>
+
+          <Menu horizontal className="p-0 hidden lg:flex">
             {user ? (
               <>
                 {/* Hack: Visual Square for the first item */}
@@ -66,7 +98,7 @@ export const App = () => {
               </Menu.Item>
             )}
           </Menu>
-        </div>
+        </Navbar.End>
       </Navbar>
       <div className="container mx-auto p-2">
         <Outlet />

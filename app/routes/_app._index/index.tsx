@@ -1,5 +1,6 @@
 import type { Account } from "@prisma/client";
 import type { LoaderFunction } from "@remix-run/node";
+import { defer } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import Bluebird from "bluebird";
@@ -26,27 +27,27 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const financeApi = new FinanceApi();
 
-  const totalBalance = await Bluebird.reduce(
-    accounts,
-    async (acc: number, account: Account) => {
-      const { balance, currency: toCurrency } = account;
-      if (toCurrency === currency) {
-        return acc + balance;
-      }
+  const totalBalance = new Promise((resolve) =>
+    Bluebird.reduce(
+      accounts,
+      async (acc: number, account: Account) => {
+        const { balance, currency: toCurrency } = account;
+        if (toCurrency === currency) {
+          return acc + balance;
+        }
 
-      const rate = await financeApi.getExchangeRate(
-        toCurrency as CurrencyEnum,
-        currency
-      );
+        const rate = await financeApi.getExchangeRate(
+          toCurrency as CurrencyEnum,
+          currency
+        );
 
-      console.log("Rate", { rate });
-
-      return acc + balance * rate;
-    },
-    0
+        return acc + balance * rate;
+      },
+      0
+    ).then((value: number) => resolve(value))
   );
 
-  return json({
+  return defer({
     accounts,
     totalBalance,
   });

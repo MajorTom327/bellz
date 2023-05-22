@@ -30,6 +30,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     .parse(params);
 
   const formData = await request.formData();
+
   const data = {
     ...Object.fromEntries(formData.entries()),
     accountId,

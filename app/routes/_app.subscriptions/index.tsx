@@ -8,7 +8,7 @@ import type {
 import { defer, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Bluebird from "bluebird";
-import { pathOr } from "ramda";
+import { omit, pathOr } from "ramda";
 import { useState } from "react";
 import { Button, Card } from "react-daisyui";
 import { verifyAuthenticityToken } from "remix-utils";
@@ -146,9 +146,16 @@ export const action: ActionFunction = async ({ request }) => {
   const cleanData = zod
     .object({
       name: zod.string(),
+      isSubscription: zod.coerce.boolean(),
       amount: zod.coerce.number().transform((val) => val * 100),
       nextExecution: zod.coerce.date(),
       accountId: zod.string(),
+    })
+    .transform((data) => {
+      return omit(["isSubscription"], {
+        ...data,
+        amount: data.amount * (data.isSubscription ? -1 : 1),
+      });
     })
     .parse(data);
 

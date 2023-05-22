@@ -12,7 +12,7 @@ import { renderToPipeableStream } from "react-dom/server";
 
 import checkEnv from "./lib/checkEnv";
 
-const ABORT_DELAY = 5_000;
+const ABORT_DELAY = 30_000;
 
 // * Declare here the variables to check for in your .env file
 checkEnv({});

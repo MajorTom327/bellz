@@ -145,7 +145,7 @@ export const AppConverter = () => {
           <Card.Title>
             <h1 className="text-2xl">Converter</h1>
           </Card.Title>
-          <div className="flex gap-2">
+          <div className="flex flex-col lg:flex-row gap-2">
             <InputGroup className="w-full">
               <Input
                 bordered
