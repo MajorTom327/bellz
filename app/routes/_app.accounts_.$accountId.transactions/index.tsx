@@ -9,6 +9,8 @@ import { AccountController } from "~/controllers/AccountController";
 
 import { TransactionSchema } from "~/models/Transaction";
 
+import ErrorHandler from "~/components/ErrorHandler";
+
 export const loader: LoaderFunction = async ({ params }) => {
   return redirect(`/accounts/${params.accountId}`);
 };
@@ -40,5 +42,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   return redirect("/accounts/" + accountId);
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AppAccounts$accountIdTransactions;

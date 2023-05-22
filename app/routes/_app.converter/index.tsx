@@ -12,6 +12,8 @@ import CurrencyEnum from "~/refs/CurrencyEnum";
 
 import FinanceApi from "~/lib/finance";
 
+import ErrorHandler from "~/components/ErrorHandler";
+
 import { useOptionalUser } from "~/hooks/useUser";
 
 type LoaderData = {};
@@ -234,5 +236,7 @@ export const action: ActionFunction = async ({ request }) => {
     value: params.value * rate,
   });
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AppConverter;

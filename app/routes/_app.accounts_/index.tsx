@@ -16,6 +16,8 @@ import ensureUser from "~/lib/authorization/ensureUser";
 
 import { AccountController } from "~/controllers/AccountController";
 
+import ErrorHandler from "~/components/ErrorHandler";
+
 type LoaderData = {};
 
 export const meta: V2_MetaFunction = () => {
@@ -74,5 +76,7 @@ export const action: ActionFunction = async ({ request }) => {
       return badRequest({ message: error.message });
     });
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AppAccounts;

@@ -4,13 +4,13 @@ import type {
   LoaderFunction,
   V2_MetaFunction,
 } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { json } from "@vercel/remix";
+import { Await, useLoaderData } from "@remix-run/react";
+import { defer, json } from "@vercel/remix";
 import Bluebird from "bluebird";
 import { pathOr } from "ramda";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Button, Card } from "react-daisyui";
-import { jsonHash, promiseHash, verifyAuthenticityToken } from "remix-utils";
+import { verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 import OccurenceEnum from "~/refs/OccurenceEnum";
@@ -22,11 +22,12 @@ import FinanceApi from "~/lib/finance";
 import { AccountController } from "~/controllers/AccountController";
 import SubscriptionController from "~/controllers/SubscriptionController";
 
+import ErrorHandler from "~/components/ErrorHandler";
+import { Skeleton } from "~/components/Skeleton";
+
 import CreateSubscription from "./CreateSubscription";
 import SubscriptionList from "./SubscriptionList";
 import SubscriptionStats from "./SubscriptionStats";
-
-type LoaderData = {};
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await ensureUser(request);
@@ -35,41 +36,54 @@ export const loader: LoaderFunction = async ({ request }) => {
   const accountController = new AccountController();
   const subscriptionController = new SubscriptionController();
 
-  const subscriptions = await subscriptionController.getSubscriptionsForUser(
-    user.id
-  );
+  const recurrentTransactions =
+    await subscriptionController.getSubscriptionsForUser(user.id);
+
+  const subscriptions = recurrentTransactions.filter((transaction) => {
+    return transaction.amount < 0;
+  });
+
+  const incomes = recurrentTransactions.filter((transaction) => {
+    return transaction.amount > 0;
+  });
 
   const financeApi = new FinanceApi();
-  const totalBalance = await Bluebird.reduce(
-    subscriptions,
-    async (acc: number, subscription) => {
-      const toCurrency = pathOr(
-        CurrencyEnum.EUR,
-        ["account", "currency"],
-        subscription
-      );
-      const { amount } = subscription;
-      if (toCurrency === currency) {
-        return acc + amount;
-      }
 
-      const rate = await financeApi.getExchangeRate(
-        toCurrency as CurrencyEnum,
-        currency
-      );
+  const getTotalBalance = (subscriptions: Subscription[]): Promise<number> => {
+    return Bluebird.reduce(
+      subscriptions,
+      async (acc: number, subscription) => {
+        const toCurrency = pathOr(
+          CurrencyEnum.EUR,
+          ["account", "currency"],
+          subscription
+        );
+        const { amount } = subscription;
+        if (toCurrency === currency) {
+          return acc + amount;
+        }
 
-      return acc + amount * rate;
-    },
-    0
-  );
+        const rate = await financeApi.getExchangeRate(
+          toCurrency as CurrencyEnum,
+          currency
+        );
 
-  return json(
-    await promiseHash({
-      accounts: accountController.getAccountsForUser(user.id),
-      subscriptions: Promise.resolve(subscriptions),
-      totalBalance: Promise.resolve(totalBalance),
-    })
-  );
+        return acc + amount * rate;
+      },
+      0
+    ).then((total) => {
+      console.log(`Total for ${subscriptions.length} subscriptions`, { total });
+      return total;
+    });
+  };
+
+  return defer({
+    accounts: await accountController.getAccountsForUser(user.id),
+    subscriptions: subscriptions,
+    incomes: incomes,
+    totalSubscriptions: getTotalBalance(subscriptions),
+    totalIncomes: getTotalBalance(incomes),
+  });
 };
 
 export const meta: V2_MetaFunction = () => {
@@ -78,19 +92,31 @@ export const meta: V2_MetaFunction = () => {
 
 export const AppSubscriptions = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { subscriptions, accounts, totalBalance } =
+  const { subscriptions, incomes, accounts, totalIncomes, totalSubscriptions } =
     useLoaderData<typeof loader>();
 
   const handleOpenCreate = () => setIsOpen(true);
   const handleCloseCreate = () => setIsOpen(false);
 
+  console.log({ totalIncomes, totalSubscriptions });
+
   return (
     <>
       <div className="flex flex-col gap-2">
-        <SubscriptionStats
-          subscriptions={subscriptions}
-          totalBalance={totalBalance}
-        />
+        <Suspense fallback={<Skeleton />}>
+          <Await resolve={Promise.all([subscriptions, incomes])}>
+            {([subscriptions, incomes]) => {
+              return (
+                <SubscriptionStats
+                  subscriptions={subscriptions}
+                  incomes={incomes}
+                  totalIncomes={totalIncomes}
+                  totalSubscriptions={totalSubscriptions}
+                />
+              );
+            }}
+          </Await>
+        </Suspense>
         <Card>
           <Card.Body>
             <Card.Title className="flex flex-col sm:flex-row justify-between items-center">
@@ -99,10 +125,10 @@ export const AppSubscriptions = () => {
                 Create a new subscription
               </Button>
             </Card.Title>
-            <SubscriptionList
-              subscriptions={subscriptions}
+            {/* <SubscriptionList
+              subscriptions={[...subscriptions, ...incomes]}
               accounts={accounts}
-            />
+            /> */}
           </Card.Body>
         </Card>
       </div>
@@ -150,5 +176,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   return json({});
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AppSubscriptions;

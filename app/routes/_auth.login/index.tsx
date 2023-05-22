@@ -12,6 +12,7 @@ import { sessionStorage } from "~/services.server/session";
 import UserController from "~/controllers/UserController";
 
 import ButtonLink from "~/components/ButtonLink";
+import ErrorHandler from "~/components/ErrorHandler";
 
 type LoaderData = {};
 
@@ -139,5 +140,7 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AuthLogin;

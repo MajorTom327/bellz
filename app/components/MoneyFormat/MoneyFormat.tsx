@@ -1,3 +1,4 @@
+import { when } from "ramda";
 import React from "react";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 
@@ -10,7 +11,8 @@ export const formatMoney = (
   amount: number,
   currency: CurrencyEnum = CurrencyEnum.EUR
 ) => {
-  return (amount / 100).toLocaleString("fr-FR", {
+  const value = when(isNaN, () => 0)(amount / 100);
+  return value.toLocaleString("fr-FR", {
     style: "currency",
     currency: currency,
   });

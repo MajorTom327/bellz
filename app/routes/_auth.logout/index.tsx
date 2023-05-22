@@ -2,6 +2,8 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@vercel/remix";
 import { commitSession, getSession } from "~/services.server/session";
 
+import ErrorHandler from "~/components/ErrorHandler";
+
 type LoaderData = {};
 
 export const loader: LoaderFunction = async () => {
@@ -21,5 +23,7 @@ export const action: ActionFunction = async ({ request }) => {
     headers: { "Set-Cookie": await commitSession(session) },
   });
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AuthLogout;

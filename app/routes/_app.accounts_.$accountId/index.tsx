@@ -10,6 +10,7 @@ import { getAccountIcon } from "~/lib/getAccountIcon";
 
 import { AccountController } from "~/controllers/AccountController";
 
+import ErrorHandler from "~/components/ErrorHandler";
 import { MoneyFormat } from "~/components/MoneyFormat";
 
 type LoaderData = {};
@@ -88,5 +89,7 @@ export const AppAccounts = () => {
 export const action: ActionFunction = async () => {
   return json({});
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AppAccounts;

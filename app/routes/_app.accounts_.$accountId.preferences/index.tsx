@@ -15,6 +15,7 @@ import ensureUser from "~/lib/authorization/ensureUser";
 
 import { AccountController } from "~/controllers/AccountController";
 
+import { ErrorHandler } from "~/components/ErrorHandler";
 import { FormControl } from "~/components/FormControl";
 import { SelectControl } from "~/components/SelectControl";
 import TimedButton from "~/components/TimedButton";
@@ -139,5 +140,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       return json({});
     });
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AppAccounts$accountIdPreferences;

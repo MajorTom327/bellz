@@ -13,13 +13,16 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  isRouteErrorResponse,
   useLoaderData,
+  useRouteError,
 } from "@remix-run/react";
 import {
   AuthenticityTokenProvider,
   createAuthenticityToken,
 } from "remix-utils";
 
+import { ErrorHandler } from "./components/ErrorHandler";
 import baseStyle from "./index.css";
 import { sessionStorage } from "./services.server/session";
 
@@ -73,3 +76,5 @@ export default function App() {
     </html>
   );
 }
+
+export const ErrorBoundary = ErrorHandler;

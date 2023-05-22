@@ -17,6 +17,7 @@ import ensureUser from "~/lib/authorization/ensureUser";
 
 import UserController from "~/controllers/UserController";
 
+import ErrorHandler from "~/components/ErrorHandler";
 import { FormControl } from "~/components/FormControl";
 import { SelectControl } from "~/components/SelectControl";
 
@@ -118,5 +119,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
   );
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AppProfile;

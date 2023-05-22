@@ -1,9 +1,16 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { Form, Link, Outlet } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  Outlet,
+  isRouteErrorResponse,
+  useRouteError,
+} from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { Button, Menu, Navbar } from "react-daisyui";
 
 import { ButtonLink } from "~/components/ButtonLink";
+import ErrorHandler from "~/components/ErrorHandler";
 
 import { useOptionalUser } from "~/hooks/useUser";
 
@@ -37,7 +44,7 @@ export const App = () => {
                 </Menu.Item>
                 <Menu.Item>
                   <ButtonLink to="/subscriptions" color="ghost" prefetch="none">
-                    Subscriptions
+                    Subscriptions & Incomes
                   </ButtonLink>
                 </Menu.Item>
                 <Menu.Item>
@@ -71,5 +78,7 @@ export const App = () => {
 export const action: ActionFunction = async () => {
   return json({});
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default App;

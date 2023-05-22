@@ -12,6 +12,7 @@ import { AccountController } from "~/controllers/AccountController";
 import Transaction from "~/models/Transaction";
 
 import { ButtonLink } from "~/components/ButtonLink";
+import ErrorHandler from "~/components/ErrorHandler";
 
 import { useMatchesData } from "~/hooks/useMatchesData";
 
@@ -58,5 +59,7 @@ export const AppAccounts$accountId = () => {
 export const action: ActionFunction = async () => {
   return json({});
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default AppAccounts$accountId;

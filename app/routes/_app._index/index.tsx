@@ -11,6 +11,8 @@ import FinanceApi from "~/lib/finance";
 
 import { AccountController } from "~/controllers/AccountController";
 
+import ErrorHandler from "~/components/ErrorHandler";
+
 import AccountCard from "./AccountCard";
 import CreateAccount from "./CreateAccount";
 import StatsBar from "./StatsBar";
@@ -67,3 +69,5 @@ export default function Index() {
     </>
   );
 }
+
+export const ErrorBoundary = ErrorHandler;

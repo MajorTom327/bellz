@@ -3,6 +3,8 @@ import { Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { Card } from "react-daisyui";
 
+import ErrorHandler from "~/components/ErrorHandler";
+
 type LoaderData = {};
 
 export const loader: LoaderFunction = async () => {
@@ -24,5 +26,7 @@ export const Auth = () => {
 export const action: ActionFunction = async () => {
   return json({});
 };
+
+export const ErrorBoundary = ErrorHandler;
 
 export default Auth;
