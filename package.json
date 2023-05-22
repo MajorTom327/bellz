@@ -19,6 +19,7 @@
     "@vercel/node": "^2.10.3",
     "@vercel/remix": "^1.16.0-patch.1",
     "@vitest/ui": "^0.31.0",
+    "ahooks": "^3.7.7",
     "bluebird": "^3.7.2",
     "classnames": "^2.3.2",
     "isbot": "^3.6.8",
