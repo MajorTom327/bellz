@@ -1,5 +1,6 @@
 import type { Subscription } from "@prisma/client";
 import { Await } from "@remix-run/react";
+import type { SerializeFrom } from "@vercel/remix";
 import { pathOr } from "ramda";
 import React, { Suspense } from "react";
 import { Card, Stats } from "react-daisyui";
@@ -10,13 +11,13 @@ import { Skeleton } from "~/components/Skeleton";
 
 import { useOptionalUser } from "~/hooks/useUser";
 
+import type { loader } from ".";
+
 type Props = {
   subscriptions: Subscription[];
   incomes: Subscription[];
-  // totalIncomes: SerializeFrom<typeof loader>["totalIncomes"];
-  // totalSubscriptions: SerializeFrom<typeof loader>["totalSubscriptions"];
-  totalIncomes: number;
-  totalSubscriptions: number;
+  totalIncomes: SerializeFrom<typeof loader>["totalIncomes"];
+  totalSubscriptions: SerializeFrom<typeof loader>["totalSubscriptions"];
 };
 
 const { Stat } = Stats;
@@ -70,12 +71,9 @@ export const SubscriptionStats: React.FC<Props> = ({
               <Stat.Item variant="value">
                 <Suspense fallback={<Skeleton />}>
                   <Await resolve={totalIncomes} errorElement={<>ERROR</>}>
-                    {(result: number) => {
-                      console.log("Resolved incomes", result);
-                      return (
-                        <MoneyFormat value={result || 0} currency={currency} />
-                      );
-                    }}
+                    {(result: number) => (
+                      <MoneyFormat value={result || 0} currency={currency} />
+                    )}
                   </Await>
                 </Suspense>
               </Stat.Item>

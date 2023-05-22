@@ -4,11 +4,12 @@ import type {
   LoaderFunction,
   V2_MetaFunction,
 } from "@remix-run/node";
-import { Await, useLoaderData } from "@remix-run/react";
-import { defer, json } from "@vercel/remix";
+// import { defer, json } from "@vercel/remix";
+import { defer, json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import Bluebird from "bluebird";
 import { pathOr } from "ramda";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { Button, Card } from "react-daisyui";
 import { verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
@@ -23,7 +24,6 @@ import { AccountController } from "~/controllers/AccountController";
 import SubscriptionController from "~/controllers/SubscriptionController";
 
 import ErrorHandler from "~/components/ErrorHandler";
-import { Skeleton } from "~/components/Skeleton";
 
 import CreateSubscription from "./CreateSubscription";
 import SubscriptionList from "./SubscriptionList";
@@ -50,31 +50,32 @@ export const loader: LoaderFunction = async ({ request }) => {
   const financeApi = new FinanceApi();
 
   const getTotalBalance = (subscriptions: Subscription[]): Promise<number> => {
-    return Bluebird.reduce(
-      subscriptions,
-      async (acc: number, subscription) => {
-        const toCurrency = pathOr(
-          CurrencyEnum.EUR,
-          ["account", "currency"],
-          subscription
-        );
-        const { amount } = subscription;
-        if (toCurrency === currency) {
-          return acc + amount;
-        }
+    return new Promise((resolve) =>
+      Bluebird.reduce(
+        subscriptions,
+        async (acc: number, subscription) => {
+          const toCurrency = pathOr(
+            CurrencyEnum.EUR,
+            ["account", "currency"],
+            subscription
+          );
+          const { amount } = subscription;
+          if (toCurrency === currency) {
+            return acc + amount;
+          }
 
-        const rate = await financeApi.getExchangeRate(
-          toCurrency as CurrencyEnum,
-          currency
-        );
+          const rate = await financeApi.getExchangeRate(
+            toCurrency as CurrencyEnum,
+            currency
+          );
 
-        return acc + amount * rate;
-      },
-      0
-    ).then((total) => {
-      console.log(`Total for ${subscriptions.length} subscriptions`, { total });
-      return total;
-    });
+          return acc + amount * rate;
+        },
+        0
+      ).then((total) => {
+        return resolve(total);
+      })
+    );
   };
 
   return defer({
@@ -98,25 +99,15 @@ export const AppSubscriptions = () => {
   const handleOpenCreate = () => setIsOpen(true);
   const handleCloseCreate = () => setIsOpen(false);
 
-  console.log({ totalIncomes, totalSubscriptions });
-
   return (
     <>
       <div className="flex flex-col gap-2">
-        <Suspense fallback={<Skeleton />}>
-          <Await resolve={Promise.all([subscriptions, incomes])}>
-            {([subscriptions, incomes]) => {
-              return (
-                <SubscriptionStats
-                  subscriptions={subscriptions}
-                  incomes={incomes}
-                  totalIncomes={totalIncomes}
-                  totalSubscriptions={totalSubscriptions}
-                />
-              );
-            }}
-          </Await>
-        </Suspense>
+        <SubscriptionStats
+          subscriptions={subscriptions}
+          incomes={incomes}
+          totalIncomes={totalIncomes}
+          totalSubscriptions={totalSubscriptions}
+        />
         <Card>
           <Card.Body>
             <Card.Title className="flex flex-col sm:flex-row justify-between items-center">
@@ -125,10 +116,10 @@ export const AppSubscriptions = () => {
                 Create a new subscription
               </Button>
             </Card.Title>
-            {/* <SubscriptionList
+            <SubscriptionList
               subscriptions={[...subscriptions, ...incomes]}
               accounts={accounts}
-            /> */}
+            />
           </Card.Body>
         </Card>
       </div>

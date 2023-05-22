@@ -1,4 +1,5 @@
 import type { Account, Subscription } from "@prisma/client";
+import classNames from "classnames";
 import type { ReactElement } from "react";
 import React from "react";
 import { Table } from "react-daisyui";
@@ -53,7 +54,12 @@ export const SubscriptionList: React.FC<Props> = ({
             )((account) => (
               <tr key={subscription.id}>
                 <td>{subscription.name}</td>
-                <td>
+                <td
+                  className={classNames({
+                    "text-success": subscription.amount > 0,
+                    "text-error": subscription.amount < 0,
+                  })}
+                >
                   <MoneyFormat
                     value={subscription.amount}
                     currency={account.currency as CurrencyEnum}
