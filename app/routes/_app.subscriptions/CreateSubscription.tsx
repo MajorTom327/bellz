@@ -1,12 +1,13 @@
 import type { Account } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import { DateTime } from "luxon";
-import { pathOr } from "ramda";
+import { pathOr, values } from "ramda";
 import React from "react";
 import { Button, Modal, Toggle } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
 import CurrencyEnum from "~/refs/CurrencyEnum";
+import OccurenceEnum from "~/refs/OccurenceEnum";
 
 import { FormControl } from "~/components/FormControl";
 import { SelectControl } from "~/components/SelectControl";
@@ -62,10 +63,22 @@ export const CreateSubscription: React.FC<Props> = ({
               }
             />
 
+            <SelectControl
+              name="occurence"
+              label="Occurence"
+              defaultValue={OccurenceEnum.MONTHLY}
+            >
+              {values(OccurenceEnum).map((occurence) => (
+                <option key={occurence} value={occurence}>
+                  {occurence}
+                </option>
+              ))}
+            </SelectControl>
+
             <SelectControl name="accountId" label="Account">
               {accounts.map((account: Account) => (
                 <option key={account.id} value={account.id}>
-                  {account.name}
+                  {account.name} ({pathOr("?", ["currency"], account)})
                 </option>
               ))}
             </SelectControl>

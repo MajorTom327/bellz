@@ -38,7 +38,14 @@ export const StatsBar: React.FC<Props> = ({ accounts, totalBalance }) => {
                 <Stat.Item variant="title">Total Balance:</Stat.Item>
                 <Stat.Item variant="value">
                   <Suspense fallback={<Skeleton className="h-8" rounded />}>
-                    <Await resolve={totalBalance}>
+                    <Await
+                      resolve={totalBalance}
+                      errorElement={
+                        <div className="!text-sm text-error">
+                          Error loading thoses informations...
+                        </div>
+                      }
+                    >
                       {(totalBalance) => (
                         <MoneyFormat value={totalBalance} currency={currency} />
                       )}
@@ -60,7 +67,17 @@ export const StatsBar: React.FC<Props> = ({ accounts, totalBalance }) => {
                     </div>
                   }
                 >
-                  <Await resolve={totalBalance}>
+                  <Await
+                    resolve={totalBalance}
+                    errorElement={
+                      <Stat.Item
+                        variant="value"
+                        className="!text-sm text-error"
+                      >
+                        Error loading thoses informations...
+                      </Stat.Item>
+                    }
+                  >
                     {(totalBalance) => (
                       <>
                         <Stat.Item variant="value">

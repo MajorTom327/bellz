@@ -5,7 +5,11 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { isNil } from "ramda";
 import { Button, Card } from "react-daisyui";
-import { notFound, verifyAuthenticityToken } from "remix-utils";
+import {
+  AuthenticityTokenInput,
+  notFound,
+  verifyAuthenticityToken,
+} from "remix-utils";
 import { match } from "ts-pattern";
 import zod from "zod";
 import AccountType from "~/refs/AccountType";
@@ -42,7 +46,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export const AppAccounts$accountIdPreferences = () => {
   const { account } = useLoaderData<typeof loader>();
 
-  console.log("Account", { account });
   return (
     <>
       <Form method="POST">
@@ -51,6 +54,7 @@ export const AppAccounts$accountIdPreferences = () => {
             <Card.Title className="flex flex-col sm:flex-row justify-between items-center">
               <h1 className="text-2xl">Preferences</h1>
             </Card.Title>
+            <AuthenticityTokenInput />
             <FormControl
               name="name"
               label="Name of the account"
@@ -83,6 +87,7 @@ export const AppAccounts$accountIdPreferences = () => {
               <h1 className="text-2xl">Danger Zone</h1>
             </Card.Title>
             <div className="flex flex-col gap-2">
+              <AuthenticityTokenInput />
               <TimedButton
                 name="action"
                 value="delete-account"
@@ -102,14 +107,15 @@ export const AppAccounts$accountIdPreferences = () => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await ensureUser(request);
-  const formData = await request.formData();
-
   await verifyAuthenticityToken(
     request,
     await getSession(request.headers.get("Cookie"))
   );
+  const formData = await request.formData();
 
   const data = Object.fromEntries(formData.entries());
+
+  console.log("Data", { data });
 
   return match(request.method)
     .with("DELETE", async () => {

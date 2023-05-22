@@ -8,10 +8,12 @@ import type {
 import { defer, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Bluebird from "bluebird";
-import { omit, pathOr } from "ramda";
+import { DateTime } from "luxon";
+import { identity, multiply, omit, pathOr, pick } from "ramda";
 import { useState } from "react";
 import { Button, Card } from "react-daisyui";
 import { verifyAuthenticityToken } from "remix-utils";
+import { P, match } from "ts-pattern";
 import zod from "zod";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 import OccurenceEnum from "~/refs/OccurenceEnum";
@@ -50,8 +52,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   const financeApi = new FinanceApi();
 
   const getTotalBalance = (subscriptions: Subscription[]): Promise<number> => {
-    return new Promise((resolve) =>
-      Bluebird.reduce(
+    return new Promise((resolve) => {
+      const daysInMonth = DateTime.local().daysInMonth || 30;
+      const weeksInMonth = Math.ceil(daysInMonth / 7);
+
+      return Bluebird.reduce(
         subscriptions,
         async (acc: number, subscription) => {
           const toCurrency = pathOr(
@@ -59,7 +64,21 @@ export const loader: LoaderFunction = async ({ request }) => {
             ["account", "currency"],
             subscription
           );
-          const { amount } = subscription;
+          const amount = match(pick(["occurence", "amount"], subscription))
+            .with(
+              { occurence: OccurenceEnum.MONTHLY, amount: P.select() },
+              identity
+            )
+            .with(
+              { occurence: OccurenceEnum.WEEKLY, amount: P.select() },
+              multiply(weeksInMonth)
+            )
+            .with(
+              { occurence: OccurenceEnum.DAILY, amount: P.select() },
+              multiply(daysInMonth)
+            )
+            .otherwise(() => 0);
+
           if (toCurrency === currency) {
             return acc + amount;
           }
@@ -74,8 +93,8 @@ export const loader: LoaderFunction = async ({ request }) => {
         0
       ).then((total) => {
         return resolve(total);
-      })
-    );
+      });
+    });
   };
 
   return defer({
@@ -148,6 +167,7 @@ export const action: ActionFunction = async ({ request }) => {
       name: zod.string(),
       isSubscription: zod.coerce.boolean(),
       amount: zod.coerce.number().transform((val) => val * 100),
+      occurence: zod.nativeEnum(OccurenceEnum),
       nextExecution: zod.coerce.date(),
       accountId: zod.string(),
     })
@@ -167,7 +187,7 @@ export const action: ActionFunction = async ({ request }) => {
     {
       name: cleanData.name,
       amount: cleanData.amount,
-      occurence: OccurenceEnum.MONTHLY,
+      occurence: cleanData.occurence,
       nextExecution: cleanData.nextExecution,
     }
   );
