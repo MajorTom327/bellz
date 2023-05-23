@@ -7,30 +7,6 @@ import { prisma } from "~/services.server/db";
 import { AccountController } from "./AccountController";
 
 export class SubscriptionController {
-  toggleSubscription(subscriptionId: string) {
-    return prisma.$transaction(async (tx) => {
-      const subscription = await tx.subscription.findUnique({
-        where: {
-          id: subscriptionId,
-        },
-      });
-
-      if (!subscription) {
-        throw new Error("Subscription not found");
-      }
-
-      const updatedSubscription = await tx.subscription.update({
-        where: {
-          id: subscriptionId,
-        },
-        data: {
-          active: !subscription.active,
-        },
-      });
-
-      return updatedSubscription;
-    });
-  }
   getSubscriptionsForUser(userId: string) {
     return prisma.subscription.findMany({
       where: {
@@ -87,6 +63,31 @@ export class SubscriptionController {
     });
   }
 
+  toggleSubscription(subscriptionId: string) {
+    return prisma.$transaction(async (tx) => {
+      const subscription = await tx.subscription.findUnique({
+        where: {
+          id: subscriptionId,
+        },
+      });
+
+      if (!subscription) {
+        throw new Error("Subscription not found");
+      }
+
+      const updatedSubscription = await tx.subscription.update({
+        where: {
+          id: subscriptionId,
+        },
+        data: {
+          active: !subscription.active,
+        },
+      });
+
+      return updatedSubscription;
+    });
+  }
+
   applyStaledSubscriptions() {
     const accountController = new AccountController();
     return prisma.$transaction(async (tx) => {
@@ -108,7 +109,7 @@ export class SubscriptionController {
             data: {
               amount: subscription.amount,
               accountId: subscription.accountId,
-              date: subscription.nextExecution!,
+              date: new Date(),
               description: subscription.name,
             },
           });
@@ -123,7 +124,7 @@ export class SubscriptionController {
               id: subscription.id,
             },
             data: {
-              lastExecution: subscription.nextExecution,
+              lastExecution: new Date(),
               nextExecution: match(subscription.occurence)
                 .with(OccurenceEnum.DAILY, () =>
                   DateTime.local().plus({ days: 1 }).toJSDate()
