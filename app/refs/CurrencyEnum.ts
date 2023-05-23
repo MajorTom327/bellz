@@ -1,7 +1,7 @@
 export enum CurrencyEnum {
-  USD = "USD",
   EUR = "EUR",
   CAD = "CAD",
+  USD = "USD",
   ETH = "ETH",
 }
 
