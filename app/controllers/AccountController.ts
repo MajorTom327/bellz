@@ -1,4 +1,4 @@
-import type { Account } from "@prisma/client";
+import type { Account, Prisma, PrismaClient } from "@prisma/client";
 import { pathOr } from "ramda";
 import type AccountType from "~/refs/AccountType";
 import type CurrencyEnum from "~/refs/CurrencyEnum";
@@ -102,26 +102,40 @@ export class AccountController {
       });
 
       // * Get the new balance for the account
-      const totalAccountValue = await tx.transaction.aggregate({
-        _sum: {
-          amount: true,
-        },
-        where: {
-          accountId,
-        },
-      });
-
-      const sumValue = totalAccountValue._sum.amount || 0;
-      await tx.account.update({
-        where: {
-          id: accountId,
-        },
-        data: {
-          balance: sumValue,
-        },
-      });
+      this.updateAccountBalance(accountId, tx);
 
       return tr;
+    });
+  }
+
+  async updateAccountBalance(
+    accountId: string,
+    tx: Omit<
+      PrismaClient<
+        Prisma.PrismaClientOptions,
+        never,
+        Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+      >,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use"
+    >
+  ) {
+    const totalAccountValue = await tx.transaction.aggregate({
+      _sum: {
+        amount: true,
+      },
+      where: {
+        accountId,
+      },
+    });
+
+    const sumValue = totalAccountValue._sum.amount || 0;
+    await tx.account.update({
+      where: {
+        id: accountId,
+      },
+      data: {
+        balance: sumValue,
+      },
     });
   }
 }

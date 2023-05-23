@@ -3,5 +3,11 @@
     "sizes": [640, 750, 828, 1080, 1200],
     "domains": [],
     "formats": ["image/avif", "image/webp"]
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/subscriptions?apiKey=4A75877F-FEBE-4EA3-9B77-493904672CCC",
+      "schedule": "37 5 * * *"
+    }
+  ]
 }
