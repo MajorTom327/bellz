@@ -9,7 +9,7 @@ import { defer, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import Bluebird from "bluebird";
 import { DateTime } from "luxon";
-import { identity, multiply, omit, pathOr, pick } from "ramda";
+import { identity, multiply, omit, pathOr, pick, propEq } from "ramda";
 import { useState } from "react";
 import { Button, Card } from "react-daisyui";
 import { verifyAuthenticityToken } from "remix-utils";
@@ -57,7 +57,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       const weeksInMonth = Math.ceil(daysInMonth / 7);
 
       return Bluebird.reduce(
-        subscriptions,
+        subscriptions.filter(propEq(true, "active")),
         async (acc: number, subscription) => {
           const toCurrency = pathOr(
             CurrencyEnum.EUR,

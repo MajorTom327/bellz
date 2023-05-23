@@ -1,8 +1,9 @@
 import type { Account, Subscription } from "@prisma/client";
+import { useFetcher } from "@remix-run/react";
 import classNames from "classnames";
 import type { ReactElement } from "react";
 import React from "react";
-import { Table } from "react-daisyui";
+import { Table, Toggle } from "react-daisyui";
 import type AccountType from "~/refs/AccountType";
 import type CurrencyEnum from "~/refs/CurrencyEnum";
 
@@ -34,6 +35,18 @@ export const SubscriptionList: React.FC<Props> = ({
   subscriptions,
   accounts,
 }) => {
+  const fetcher = useFetcher();
+
+  const handleToggleSubscription = (subscription: Subscription) => () => {
+    fetcher.submit(
+      {},
+      {
+        method: "POST",
+        action: `/subscriptions/${subscription.id}/toggle`,
+      }
+    );
+  };
+
   return (
     <>
       <Table>
@@ -43,6 +56,7 @@ export const SubscriptionList: React.FC<Props> = ({
             <th>Amount</th>
             <th>Frequency</th>
             <th>Next Payment</th>
+            <th>Active</th>
             <th>Account</th>
           </tr>
         </thead>
@@ -68,6 +82,12 @@ export const SubscriptionList: React.FC<Props> = ({
                 <td>{subscription.occurence}</td>
                 <td>
                   <DateFormat value={subscription.nextExecution} />
+                </td>
+                <td>
+                  <Toggle
+                    checked={subscription.active}
+                    onChange={handleToggleSubscription(subscription)}
+                  />
                 </td>
                 <td>
                   <ButtonLink

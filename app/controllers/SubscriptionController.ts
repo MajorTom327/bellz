@@ -7,6 +7,30 @@ import { prisma } from "~/services.server/db";
 import { AccountController } from "./AccountController";
 
 export class SubscriptionController {
+  toggleSubscription(subscriptionId: string) {
+    return prisma.$transaction(async (tx) => {
+      const subscription = await tx.subscription.findUnique({
+        where: {
+          id: subscriptionId,
+        },
+      });
+
+      if (!subscription) {
+        throw new Error("Subscription not found");
+      }
+
+      const updatedSubscription = await tx.subscription.update({
+        where: {
+          id: subscriptionId,
+        },
+        data: {
+          active: !subscription.active,
+        },
+      });
+
+      return updatedSubscription;
+    });
+  }
   getSubscriptionsForUser(userId: string) {
     return prisma.subscription.findMany({
       where: {
@@ -68,16 +92,10 @@ export class SubscriptionController {
     return prisma.$transaction(async (tx) => {
       const staledSubscriptions = await tx.subscription.findMany({
         where: {
-          OR: [
-            {
-              nextExecution: {
-                lte: DateTime.local().toJSDate(),
-              },
-            },
-            {
-              nextExecution: null,
-            },
-          ],
+          nextExecution: {
+            lte: DateTime.local().toJSDate(),
+          },
+          active: true,
         },
       });
 

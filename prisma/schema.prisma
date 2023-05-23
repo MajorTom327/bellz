@@ -71,6 +71,7 @@ model Subscription {
 
   name   String
   amount Int
+  active Boolean @default(true)
 
   occurence     String
   lastExecution DateTime?
