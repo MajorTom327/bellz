@@ -11,7 +11,7 @@ const Stat = Stats.Stat;
 
 type Props = {
   summary: {
-    total: number;
+    amount: number;
     refunded: number;
   };
 };
@@ -29,7 +29,7 @@ export const LoanStats: React.FC<Props> = ({ summary }) => {
             <Stat>
               <Stat.Item variant="title">Total</Stat.Item>
               <Stat.Item variant="value">
-                <MoneyFormat value={summary.total} currency={currency} />
+                <MoneyFormat value={summary.amount} currency={currency} />
               </Stat.Item>
             </Stat>
             <Stat>
