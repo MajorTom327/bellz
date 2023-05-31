@@ -119,9 +119,10 @@ const DirectionSelector = () => {
         >
           <div
             className={classNames(
-              "w-1/2 h-full rounded bg-primary/60 text-primary-content shadow transform transition-all",
+              "w-1/2 h-full rounded shadow transform transition-all",
               {
                 "translate-x-full bg-error/60 text-error-content": isExpense,
+                "bg-primary/60 text-primary-content": not(isExpense),
               }
             )}
           >

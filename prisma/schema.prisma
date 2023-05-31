@@ -49,10 +49,11 @@ model Account {
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  transaction  Transaction[]
-  Subscription Subscription[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  transactions  Transaction[]
+  subscriptions Subscription[]
+  teams         Team[]
 }
 
 model Transaction {
@@ -119,9 +120,10 @@ model Team {
 
   members User[] @relation("TeamMembers")
 
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  Invitation Invitation[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  invitations Invitation[]
+  accounts    Account[]
 }
 
 model Invitation {

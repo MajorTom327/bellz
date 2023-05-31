@@ -1,7 +1,7 @@
 import type { Team } from "@prisma/client";
 import React from "react";
 import { Card } from "react-daisyui";
-import { FaUserPlus } from "react-icons/fa";
+import { FaUserPlus, FaWrench } from "react-icons/fa";
 
 import { ButtonLink } from "~/components/ButtonLink";
 
@@ -24,8 +24,11 @@ export const TeamList: React.FC<Props> = ({ teams }) => {
                 <div className="w-full flex justify-between items-center">
                   <h3 className="font-primary">{team.name}</h3>
                   <div className="flex gap-2">
+                    <ButtonLink to={`/teams/${team.id}/accounts`}>
+                      Team's accounts
+                    </ButtonLink>
                     <ButtonLink to={`/teams/${team.id}`}>
-                      Edit attached accounts
+                      <FaWrench />
                     </ButtonLink>
                     {user?.id === team.ownerId && (
                       <ButtonLink

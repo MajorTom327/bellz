@@ -119,6 +119,9 @@ export class TeamController {
         id: teamId,
         OR: [{ ownerId: userId }, { members: { some: { id: userId } } }],
       },
+      include: {
+        accounts: true,
+      },
     });
   }
 
@@ -129,6 +132,7 @@ export class TeamController {
       },
       // Todo: Add accounts
       // include: {
+      //   accounts: true
       // },
     });
   }
@@ -140,6 +144,33 @@ export class TeamController {
         ownerId,
       },
     });
+  }
+
+  toggleAccount(teamId: string, accountId: string) {
+    return prisma.team
+      .findFirst({
+        where: {
+          id: teamId,
+        },
+        include: {
+          accounts: true,
+        },
+      })
+      .then((team) => {
+        const accountIds = team.accounts.map((account) => account.id);
+        const isAccountInTeam = accountIds.includes(accountId);
+
+        return prisma.team.update({
+          where: {
+            id: teamId,
+          },
+          data: {
+            accounts: isAccountInTeam
+              ? { disconnect: { id: accountId } }
+              : { connect: { id: accountId } },
+          },
+        });
+      });
   }
 }
 

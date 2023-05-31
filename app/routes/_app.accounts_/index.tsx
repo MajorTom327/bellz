@@ -24,8 +24,12 @@ export const meta: V2_MetaFunction = () => {
   return [{ title: "Bellz - Accounts" }];
 };
 
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({});
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await ensureUser(request);
+
+  const accounts = await new AccountController().getAccountsForUser(user.id);
+
+  return json<LoaderData>({ accounts });
 };
 
 export const AppAccounts = () => <Outlet />;

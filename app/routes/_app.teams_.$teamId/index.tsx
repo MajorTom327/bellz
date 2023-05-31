@@ -37,13 +37,24 @@ export const AppTeams$teamId = () => {
   const user = useOptionalUser();
   const { team } = useLoaderData<typeof loader>();
 
+  const isOwner = user?.id === team?.ownerId;
+
   return (
     <>
       <div className="flex flex-col gap-2">
         <div className="tabs tabs-boxed">
           <NavLink
-            to={"/teams/" + params.teamId}
+            to={`/teams/${params.teamId}`}
             end
+            prefetch="intent"
+            className={({ isActive }) =>
+              classNames("tab tab-md", { "tab-active": isActive })
+            }
+          >
+            General
+          </NavLink>
+          <NavLink
+            to={`/teams/${params.teamId}/accounts`}
             prefetch="intent"
             className={({ isActive }) =>
               classNames("tab tab-md", { "tab-active": isActive })
@@ -51,10 +62,9 @@ export const AppTeams$teamId = () => {
           >
             Accounts
           </NavLink>
-          {user?.id === team?.ownerId && (
+          {isOwner && (
             <NavLink
               to={"/teams/" + params.teamId + "/users"}
-              end
               prefetch="intent"
               className={({ isActive }) =>
                 classNames("tab tab-md", { "tab-active": isActive })
