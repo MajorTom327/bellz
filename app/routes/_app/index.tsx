@@ -121,6 +121,9 @@ export const Sidebar = ({
           <NavLink to="/converter">Converter</NavLink>
         </Menu.Item>
         <Menu.Item>
+          <NavLink to="/teams">Teams</NavLink>
+        </Menu.Item>
+        <Menu.Item>
           <NavLink to="/profile">Profile</NavLink>
         </Menu.Item>
 
