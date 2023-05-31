@@ -1,6 +1,7 @@
 import classNames from "classnames";
+import { isNotNil } from "ramda";
 import React from "react";
-import { Table } from "react-daisyui";
+import { Badge, Table } from "react-daisyui";
 import type CurrencyEnum from "~/refs/CurrencyEnum";
 
 import type Transaction from "~/models/Transaction";
@@ -30,7 +31,14 @@ export const TransactionList: React.FC<Props> = ({
         <tbody>
           {transactions.map((transaction) => (
             <tr key={transaction.id}>
-              <td>{transaction.description}</td>
+              <td>
+                {transaction.description}
+                {isNotNil(transaction.loanId) && (
+                  <Badge className="ml-2" color="accent">
+                    Loan
+                  </Badge>
+                )}
+              </td>
               <td>
                 <DateFormat value={transaction.date} />
               </td>

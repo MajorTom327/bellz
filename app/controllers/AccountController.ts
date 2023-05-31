@@ -1,10 +1,13 @@
-import type { Account, Prisma, PrismaClient } from "@prisma/client";
-import { pathOr } from "ramda";
+import type {
+  Account,
+  Prisma,
+  PrismaClient,
+  Transaction,
+} from "@prisma/client";
+import { isNotNil } from "ramda";
 import type AccountType from "~/refs/AccountType";
 import type CurrencyEnum from "~/refs/CurrencyEnum";
 import { prisma } from "~/services.server/db";
-
-import type Transaction from "~/models/Transaction";
 
 export class AccountController {
   deleteAccount(accountId: string, id: string) {
@@ -98,11 +101,26 @@ export class AccountController {
           amount: transaction.amount,
           description: transaction.description,
           date: transaction.date,
+          loanId: transaction.loanId,
         },
       });
 
+      if (isNotNil(transaction.loanId)) {
+        // * If this is a loan, we need to update the loan balance
+        await tx.loan.update({
+          where: {
+            id: transaction.loanId,
+          },
+          data: {
+            refunded: {
+              increment: Math.abs(transaction.amount),
+            },
+          },
+        });
+      }
+
       // * Get the new balance for the account
-      this.updateAccountBalance(accountId, tx);
+      await this.updateAccountBalance(accountId, tx);
 
       return tr;
     });

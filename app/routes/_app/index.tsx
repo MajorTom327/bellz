@@ -2,12 +2,15 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import {
   Form,
   Link,
+  NavLink,
   Outlet,
   isRouteErrorResponse,
   useRouteError,
 } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { Button, Divider, Dropdown, Menu, Navbar } from "react-daisyui";
+import { not } from "ramda";
+import { useState } from "react";
+import { Button, Divider, Drawer, Dropdown, Menu, Navbar } from "react-daisyui";
 import { FaBars } from "react-icons/fa";
 
 import { ButtonLink } from "~/components/ButtonLink";
@@ -23,86 +26,119 @@ export const loader: LoaderFunction = async () => {
 
 export const App = () => {
   const user = useOptionalUser();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <>
-      <Navbar className="bg-base-100 shadow-xl mb-6">
-        <Navbar.Start>
-          <ButtonLink color="ghost" to="/">
-            Bellz
-          </ButtonLink>
-        </Navbar.Start>
-        <Navbar.End>
-          <Dropdown end>
-            <Button tabIndex={0} color="ghost" className="lg:hidden">
+      <Drawer
+        open={isSidebarOpen}
+        mobile
+        onClickOverlay={() => setIsSidebarOpen(false)}
+        side={
+          <Sidebar
+            isLogged={Boolean(user)}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+        }
+        overlayClassName="lg:hidden"
+        sideClassName="lg:border-r"
+      >
+        <Navbar className="bg-base-100 shadow-xl">
+          <Navbar.Start>
+            <ButtonLink color="ghost" to="/">
+              Bellz
+            </ButtonLink>
+            <Button
+              color="ghost"
+              onClick={() => setIsSidebarOpen(not)}
+              className="lg:hidden"
+            >
               <FaBars />
             </Button>
-            <Dropdown.Menu tabIndex={0}>
+          </Navbar.Start>
+          <Navbar.End>
+            <Menu horizontal className="p-0">
               {user ? (
                 <>
-                  <Link to="/converter" color="ghost" prefetch="none">
-                    <Dropdown.Item>Converter</Dropdown.Item>
-                  </Link>
-                  <Link to="/subscriptions" color="ghost" prefetch="none">
-                    <Dropdown.Item>Subscriptions & Incomes</Dropdown.Item>
-                  </Link>
-                  <Link to="/profile" color="ghost" prefetch="none">
-                    <Dropdown.Item>Profile</Dropdown.Item>
-                  </Link>
-                  <Divider />
                   <Form method="post" action="/logout">
-                    <Button type="submit" wide color="ghost">
-                      Logout
-                    </Button>
+                    <Menu.Item>
+                      <Button type="submit" color="ghost">
+                        Logout
+                      </Button>
+                    </Menu.Item>
                   </Form>
                 </>
               ) : (
-                <Dropdown.Item>
+                <Menu.Item>
                   <Link to="/login">Login</Link>
-                </Dropdown.Item>
+                </Menu.Item>
               )}
-            </Dropdown.Menu>
-          </Dropdown>
+            </Menu>
+          </Navbar.End>
+        </Navbar>
+        <div className="container mx-auto p-2 mt-6">
+          <Outlet />
+        </div>
+      </Drawer>
+    </>
+  );
+};
 
-          <Menu horizontal className="p-0 hidden lg:flex">
-            {user ? (
-              <>
-                {/* Hack: Visual Square for the first item */}
-                <Menu.Item></Menu.Item>
-                <Menu.Item>
-                  <ButtonLink to="/converter" color="ghost" prefetch="none">
-                    Converter
-                  </ButtonLink>
-                </Menu.Item>
-                <Menu.Item>
-                  <ButtonLink to="/subscriptions" color="ghost" prefetch="none">
-                    Subscriptions & Incomes
-                  </ButtonLink>
-                </Menu.Item>
-                <Menu.Item>
-                  <ButtonLink to="/profile" color="ghost" prefetch="none">
-                    Profile
-                  </ButtonLink>
-                </Menu.Item>
-                <Form method="post" action="/logout">
-                  <Menu.Item>
-                    <Button type="submit" color="ghost">
-                      Logout
-                    </Button>
-                  </Menu.Item>
-                </Form>
-              </>
-            ) : (
-              <Menu.Item>
-                <Link to="/login">Login</Link>
-              </Menu.Item>
-            )}
-          </Menu>
-        </Navbar.End>
-      </Navbar>
-      <div className="container mx-auto p-2">
-        <Outlet />
-      </div>
+export const Sidebar = ({
+  isLogged,
+  onClose,
+}: {
+  isLogged: boolean;
+  onClose: () => void;
+}) => {
+  if (!isLogged) {
+    return null;
+  }
+  return (
+    <>
+      <Menu className="bg-base-100/90">
+        <Menu.Title>
+          <Link to="/">Bellz</Link>
+        </Menu.Title>
+        <Menu.Item>
+          <NavLink to="/" end>
+            Dashboard
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item>
+          <NavLink to="/accounts">Accounts</NavLink>
+        </Menu.Item>
+        <Menu.Item>
+          <NavLink to="/loans">Loans</NavLink>
+        </Menu.Item>
+        <Menu.Item>
+          <NavLink to="/subscriptions">Subscriptions & Incomes</NavLink>
+        </Menu.Item>
+        <Menu.Title>
+          <Link to="/converter">Tools</Link>
+        </Menu.Title>
+        <Menu.Item>
+          <NavLink to="/converter">Converter</NavLink>
+        </Menu.Item>
+        <Menu.Item>
+          <NavLink to="/profile">Profile</NavLink>
+        </Menu.Item>
+
+        <Menu.Item className="lg:hidden">
+          <Button color="ghost" onClick={onClose}>
+            Close
+          </Button>
+        </Menu.Item>
+
+        <div className="flex-1"></div>
+        <Form method="post" action="/logout">
+          <Menu.Item>
+            <Button type="submit" color="ghost">
+              Logout
+            </Button>
+          </Menu.Item>
+        </Form>
+      </Menu>
     </>
   );
 };

@@ -8,7 +8,7 @@ import AccountType from "~/refs/AccountType";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { FormControl } from "~/components/FormControl";
-import SelectControl from "~/components/SelectControl";
+import SelectControl, { CurrencySelector } from "~/components/SelectControl";
 
 import { useOptionalUser } from "~/hooks/useUser";
 
@@ -21,7 +21,6 @@ export const CreateAccount: React.FC<Props> = ({}) => {
 
   const handleClose = () => setShowModal(false);
   const handleOpenModal = () => {
-    console.log("Handle open modal");
     setShowModal(true);
   };
 
@@ -62,17 +61,7 @@ export const CreateAccount: React.FC<Props> = ({}) => {
               <option value={AccountType.Bank}>Bank</option>
             </SelectControl>
 
-            <SelectControl
-              label="Currency"
-              name="currency"
-              defaultValue={currency}
-            >
-              {Object.entries(CurrencyEnum).map(([key, value]) => (
-                <option key={key} value={value}>
-                  {value}
-                </option>
-              ))}
-            </SelectControl>
+            <CurrencySelector defaultValue={currency} />
 
             <AuthenticityTokenInput />
           </Modal.Body>
