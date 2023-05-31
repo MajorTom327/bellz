@@ -1,9 +1,4 @@
-import {
-  Links,
-  Meta,
-  isRouteErrorResponse,
-  useRouteError,
-} from "@remix-run/react";
+import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
 import React from "react";
 
 import GeneralErrorHandler from "./GeneralErrorHandler";

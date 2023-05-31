@@ -20,14 +20,16 @@ export const GeneralErrorHandler: React.FC<Props> = ({ error }) => {
             </h2>
           </div>
           {isDevelopment() && isNotNilOrEmpty(error.stack) && (
-            <CodeMockup>
-              <CodeMockup.Line>
-                {error.stack.replace(/ {2,}/gi, "        ")}
-              </CodeMockup.Line>
-              {/* {error.stack.split("\n").map((line: string, index: number) => (
+            <div className="w-full overflow-y-hidden">
+              <CodeMockup className="overflow-x-scroll">
+                <CodeMockup.Line>
+                  {error.stack.replace(/ {2,}/gi, "        ")}
+                </CodeMockup.Line>
+                {/* {error.stack.split("\n").map((line: string, index: number) => (
                 <CodeMockup.Line key={index}>{line}</CodeMockup.Line>
               ))} */}
-            </CodeMockup>
+              </CodeMockup>
+            </div>
           )}
         </div>
       </div>

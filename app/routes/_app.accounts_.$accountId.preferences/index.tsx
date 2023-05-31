@@ -1,7 +1,7 @@
 import type { Account } from "@prisma/client";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { isNil } from "ramda";
 import { Button, Card } from "react-daisyui";
@@ -46,6 +46,18 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export const AppAccounts$accountIdPreferences = () => {
   const { account } = useLoaderData<typeof loader>();
 
+  const fetcher = useFetcher();
+
+  const handleDisconnectFromAllTeams = async () => {
+    fetcher.submit(
+      {},
+      {
+        method: "POST",
+        action: "/accounts/" + account.id + "/disconnect",
+      }
+    );
+  };
+
   return (
     <>
       <Form method="POST">
@@ -88,6 +100,18 @@ export const AppAccounts$accountIdPreferences = () => {
             </Card.Title>
             <div className="flex flex-col gap-2">
               <AuthenticityTokenInput />
+
+              <Button
+                type="button"
+                color="warning"
+                disabled={
+                  fetcher.state === "submitting" || fetcher.type === "done"
+                }
+                onClick={handleDisconnectFromAllTeams}
+              >
+                Disconnect account from all teams
+              </Button>
+
               <TimedButton
                 name="action"
                 value="delete-account"
