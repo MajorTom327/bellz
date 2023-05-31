@@ -14,6 +14,7 @@ import ErrorHandler from "~/components/ErrorHandler";
 
 import CreateLoan from "./CreateLoan";
 import LoanList from "./LoanList";
+import LoanStats from "./LoanStats";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await ensureUser(request);
@@ -23,24 +24,28 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json(
     await promiseHash({
       loans: loanController.getLoansForUser(user.id),
+      summary: loanController.getLoansSummaryForUser(user.id),
     })
   );
 };
 
 export const AppLoans = () => {
-  const { loans } = useLoaderData<typeof loader>();
+  const { loans, summary } = useLoaderData<typeof loader>();
 
   return (
     <>
       <CreateLoan />
-      <Card>
-        <Card.Body>
-          <Card.Title>
-            <h2>Loans</h2>
-          </Card.Title>
-          <LoanList loans={loans} />
-        </Card.Body>
-      </Card>
+      <div className="flex flex-col gap-2">
+        <LoanStats summary={summary} />
+        <Card>
+          <Card.Body>
+            <Card.Title>
+              <h2>Loans</h2>
+            </Card.Title>
+            <LoanList loans={loans} />
+          </Card.Body>
+        </Card>
+      </div>
     </>
   );
 };
