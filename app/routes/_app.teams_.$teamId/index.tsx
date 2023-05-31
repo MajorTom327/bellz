@@ -39,31 +39,33 @@ export const AppTeams$teamId = () => {
 
   return (
     <>
-      <div className="tabs tabs-boxed">
-        <NavLink
-          to={"/teams/" + params.teamId}
-          end
-          prefetch="intent"
-          className={({ isActive }) =>
-            classNames("tab tab-md", { "tab-active": isActive })
-          }
-        >
-          Accounts
-        </NavLink>
-        {user?.id === team?.ownerId && (
+      <div className="flex flex-col gap-2">
+        <div className="tabs tabs-boxed">
           <NavLink
-            to={"/teams/" + params.teamId + "/users"}
+            to={"/teams/" + params.teamId}
             end
             prefetch="intent"
             className={({ isActive }) =>
               classNames("tab tab-md", { "tab-active": isActive })
             }
           >
-            Users
+            Accounts
           </NavLink>
-        )}
+          {user?.id === team?.ownerId && (
+            <NavLink
+              to={"/teams/" + params.teamId + "/users"}
+              end
+              prefetch="intent"
+              className={({ isActive }) =>
+                classNames("tab tab-md", { "tab-active": isActive })
+              }
+            >
+              Users
+            </NavLink>
+          )}
+        </div>
+        <Outlet />
       </div>
-      <Outlet />
     </>
   );
 };

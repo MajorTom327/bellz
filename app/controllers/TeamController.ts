@@ -1,6 +1,20 @@
 import { prisma } from "~/services.server/db";
 
 export class TeamController {
+  removeUserFromTeam(teamId: string, userId: string) {
+    return prisma.team.update({
+      where: {
+        id: teamId,
+      },
+      data: {
+        members: {
+          disconnect: {
+            id: userId,
+          },
+        },
+      },
+    });
+  }
   getUsersInTeam(teamId: string) {
     return prisma.user.findMany({
       where: {
