@@ -23,7 +23,7 @@ model User {
   Subscription Subscription[]
   loans        Loan[]
   teams        Team[]
-  ownedTeam    Team[] @relation("TeamMembers")
+  ownedTeam    Team[]         @relation("TeamMembers")
 }
 
 model Profile {
@@ -118,6 +118,22 @@ model Team {
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   members User[] @relation("TeamMembers")
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Invitation Invitation[]
+}
+
+model Invitation {
+  id String @id @default(uuid())
+
+  email String
+  token String @unique
+
+  expiresAt DateTime @default(dbgenerated("NOW() + interval '7 day'"))
+
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

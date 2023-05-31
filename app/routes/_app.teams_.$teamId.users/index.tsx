@@ -12,6 +12,7 @@ import TeamController from "~/controllers/TeamController";
 
 import ErrorHandler from "~/components/ErrorHandler";
 
+import InvitUser from "./InvitUser";
 import UserRow from "./UserRow";
 
 type LoaderData = {};
@@ -39,7 +40,10 @@ export const AppTeams$teamIdUsers = () => {
     <>
       <Card>
         <Card.Body>
-          <Card.Title>Users</Card.Title>
+          <Card.Title className="flex justify-between items-center">
+            Users
+            <InvitUser />
+          </Card.Title>
           <Table className="w-full">
             <thead>
               <tr>
