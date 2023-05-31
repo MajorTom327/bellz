@@ -10,6 +10,7 @@ import { AccountController } from "~/controllers/AccountController";
 import ErrorHandler from "~/components/ErrorHandler";
 
 import AccountCard from "../_app._index/AccountCard";
+import CreateAccount from "../_app._index/CreateAccount";
 
 type LoaderData = {};
 
@@ -28,6 +29,7 @@ export const AppAccountsIndex = () => {
   const { accounts } = useLoaderData<typeof loader>();
   return (
     <>
+      <CreateAccount />
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
         {accounts.map((account: Account) => (
           <AccountCard key={account.id} account={account} />

@@ -19,7 +19,8 @@ export class TeamController {
       .then((invitation) => {
         // Todo: Send email for invitation
 
-        console.log("Invitation created", invitation.token);
+        const route = `/teams/join/${invitation.token}`;
+        console.log("Invitation created", route);
 
         return invitation;
       });
