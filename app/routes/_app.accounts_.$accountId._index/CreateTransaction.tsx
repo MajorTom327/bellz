@@ -1,13 +1,17 @@
-import { Form, useNavigation, useParams } from "@remix-run/react";
+import type { Loan } from "@prisma/client";
+import { Form, useFetcher, useNavigation, useParams } from "@remix-run/react";
+import classNames from "classnames";
 import { DateTime } from "luxon";
+import { not, pathOr } from "ramda";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
 import zod from "zod";
-import CurrencyEnum from "~/refs/CurrencyEnum";
+import type CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { FormControl } from "~/components/FormControl";
+import { MoneyFormat } from "~/components/MoneyFormat";
 import { SelectControl } from "~/components/SelectControl";
 
 export const CreateTransaction: React.FC = () => {
@@ -65,12 +69,15 @@ export const CreateTransaction: React.FC = () => {
               label="Description"
               name="description"
             />
+
             <FormControl
               disabled={isSubmitting}
               label="Amount"
               name="amount"
               type="number"
             />
+            <DirectionSelector />
+            <LoanSelector />
             <FormControl
               disabled={isSubmitting}
               label="Date"
@@ -87,6 +94,73 @@ export const CreateTransaction: React.FC = () => {
           </Modal.Actions>
         </Form>
       </Modal>
+    </>
+  );
+};
+
+const DirectionSelector = () => {
+  const [isExpense, setIsExpense] = useState(false);
+  return (
+    <>
+      <label className="label" htmlFor="#transactionDirection">
+        <span className="label-text">Income or expense ?</span>
+      </label>
+      <input
+        id="transactionDirection"
+        type="hidden"
+        readOnly
+        name="isExpense"
+        value={isExpense.toString()}
+      />
+      <div className="flex justify-center">
+        <div
+          className="w-48 h-16 border rounded-lg overflow-hidden p-2 bg-base-200 shadow-inner cursor-pointer "
+          onClick={() => setIsExpense(not)}
+        >
+          <div
+            className={classNames(
+              "w-1/2 h-full rounded bg-primary/60 text-primary-content shadow transform transition-all",
+              {
+                "translate-x-full bg-error/60 text-error-content": isExpense,
+              }
+            )}
+          >
+            <div className="flex items-center justify-center h-full select-none ">
+              {isExpense ? <span>Expense</span> : <span>Income</span>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const LoanSelector = () => {
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    fetcher.load("/loans");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loans = pathOr<Loan[]>([], ["data", "loans"], fetcher);
+
+  return (
+    <>
+      <SelectControl label="Loan" name="loanId">
+        <option>Select a loan to associate with</option>
+        {/* @ts-ignore */}
+        {loans.map((loan) => (
+          <option value={loan.id} key={loan.id}>
+            {loan.label} (
+            <MoneyFormat
+              value={loan.amount}
+              currency={loan.currency as CurrencyEnum}
+            />
+            )
+          </option>
+        ))}
+      </SelectControl>
     </>
   );
 };

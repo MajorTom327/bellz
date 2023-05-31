@@ -49,7 +49,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   return defer({
     accounts,
-    totalBalance,
+    totalBalance: totalBalance,
   });
 };
 
@@ -65,8 +65,8 @@ export default function Index() {
             <AccountCard key={account.id} account={account} />
           ))}
         </div>
+        <CreateAccount />
       </div>
-      <CreateAccount />
     </>
   );
 }
