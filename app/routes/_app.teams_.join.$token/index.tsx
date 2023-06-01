@@ -1,8 +1,15 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
+import { useParams } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { badRequest } from "remix-utils";
+import { Button, Form } from "react-daisyui";
+import {
+  AuthenticityTokenInput,
+  badRequest,
+  verifyAuthenticityToken,
+} from "remix-utils";
 import zod from "zod";
+import { sessionStorage } from "~/services.server/session";
 
 import ensureUser from "~/lib/authorization/ensureUser";
 
@@ -11,6 +18,24 @@ import TeamController from "~/controllers/TeamController";
 import ErrorHandler from "~/components/ErrorHandler";
 
 export const loader: LoaderFunction = async ({ request, params }) => {
+  await ensureUser(request);
+
+  return json({});
+};
+
+export const AppTeamsJoin = () => {
+  const { token } = useParams();
+  return (
+    <>
+      <Form method="POST" action={`/teams/join/${token}`}>
+        <AuthenticityTokenInput />
+        <Button type="submit">Join</Button>
+      </Form>
+    </>
+  );
+};
+
+export const action: ActionFunction = async ({ request, params }) => {
   const user = await ensureUser(request);
   const userId = user.id;
 
@@ -19,6 +44,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
       token: zod.string(),
     })
     .parse(params);
+
+  await verifyAuthenticityToken(
+    request,
+    await sessionStorage.getSession(request.headers.get("Cookie") ?? "")
+  );
 
   const teamController = new TeamController();
 
@@ -29,14 +59,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   }
 
   return redirect(`/app/teams/${team.id}`);
-};
-
-export const AppTeamsJoin = () => {
-  return <>AppTeamsJoin</>;
-};
-
-export const action: ActionFunction = async () => {
-  return json({});
 };
 
 export const ErrorBoundary = ErrorHandler;

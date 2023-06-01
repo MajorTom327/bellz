@@ -172,6 +172,16 @@ export class TeamController {
         });
       });
   }
+
+  cleanExpiredInvitations() {
+    return prisma.invitation.deleteMany({
+      where: {
+        expiresAt: {
+          lt: new Date(),
+        },
+      },
+    });
+  }
 }
 
 export default TeamController;
