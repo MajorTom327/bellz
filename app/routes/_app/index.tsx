@@ -3,9 +3,9 @@ import { Form, Link, NavLink, Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { not, prop } from "ramda";
 import { useState } from "react";
-import { Button, Drawer, Menu, Navbar, Select } from "react-daisyui";
+import { Button, Drawer, Menu, Navbar } from "react-daisyui";
 import { FaBars } from "react-icons/fa";
-import { badRequest, notFound, verifyAuthenticityToken } from "remix-utils";
+import { badRequest, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
 import { sessionStorage } from "~/services.server/session";
 
@@ -51,7 +51,7 @@ export const App = () => {
         sideClassName="lg:border-r"
       >
         <Navbar className="bg-base-100 shadow-xl">
-          <Navbar.Start>
+          <Navbar.Start className="flex gap-2">
             <ButtonLink color="ghost" to="/">
               Bellz
             </ButtonLink>

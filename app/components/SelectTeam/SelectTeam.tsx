@@ -18,7 +18,7 @@ export const SelectTeam: React.FC<Props> = ({}) => {
 
   return (
     <>
-      <Select color="ghost" size="sm" onChange={handleChangeTeam} value={team}>
+      <Select color="ghost" size="md" onChange={handleChangeTeam} value={team}>
         <Select.Option value="">No team selected</Select.Option>
         {/* @ts-ignore */}
         {teams.map((team: Team) => (
