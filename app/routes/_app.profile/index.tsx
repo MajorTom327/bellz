@@ -7,7 +7,7 @@ import type {
 import { Form } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { prop, propOr } from "ramda";
-import { Button, Card } from "react-daisyui";
+import { Button, Card, Select } from "react-daisyui";
 import { AuthenticityTokenInput, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
 import CurrencyEnum from "~/refs/CurrencyEnum";
@@ -59,9 +59,9 @@ export const AppProfile = () => {
               defaultValue={propOr(CurrencyEnum.EUR, "currency", profile)}
             >
               {Object.entries(CurrencyEnum).map(([key, value]) => (
-                <option key={key} value={value}>
+                <Select.Option key={key} value={value}>
                   {value}
-                </option>
+                </Select.Option>
               ))}
             </SelectControl>
 

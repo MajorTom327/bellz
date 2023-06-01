@@ -1,5 +1,6 @@
 import { defaultTo } from "ramda";
 import React from "react";
+import { Select } from "react-daisyui";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 
 import SelectControl from "./SelectControl";
@@ -18,9 +19,9 @@ export const CurrencySelector: React.FC<Props> = ({ defaultValue, name }) => {
         defaultValue={defaultValue}
       >
         {Object.entries(CurrencyEnum).map(([key, value]) => (
-          <option key={key} value={value}>
+          <Select.Option key={key} value={value}>
             {value}
-          </option>
+          </Select.Option>
         ))}
       </SelectControl>
     </>

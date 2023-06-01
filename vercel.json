@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/subscriptions?apiKey=4A75877F-FEBE-4EA3-9B77-493904672CCC",
       "schedule": "37 5 * * *"
+    },
+    {
+      "path": "/api/cron/invitations?apiKey=4A75877F-FEBE-4EA3-9B77-493904672CCC",
+      "schedule": "37 4 * * *"
     }
   ]
 }
