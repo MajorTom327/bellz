@@ -3,7 +3,7 @@ import { Form } from "@remix-run/react";
 import { DateTime } from "luxon";
 import { pathOr, values } from "ramda";
 import React from "react";
-import { Button, Modal, Toggle } from "react-daisyui";
+import { Button, Modal, Select, Toggle } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
 import CurrencyEnum from "~/refs/CurrencyEnum";
@@ -69,17 +69,17 @@ export const CreateSubscription: React.FC<Props> = ({
               defaultValue={OccurenceEnum.MONTHLY}
             >
               {values(OccurenceEnum).map((occurence) => (
-                <option key={occurence} value={occurence}>
+                <Select.Option key={occurence} value={occurence}>
                   {occurence}
-                </option>
+                </Select.Option>
               ))}
             </SelectControl>
 
             <SelectControl name="accountId" label="Account">
               {accounts.map((account: Account) => (
-                <option key={account.id} value={account.id}>
+                <Select.Option key={account.id} value={account.id}>
                   {account.name} ({pathOr("?", ["currency"], account)})
-                </option>
+                </Select.Option>
               ))}
             </SelectControl>
           </Modal.Body>

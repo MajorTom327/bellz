@@ -1,20 +1,14 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  NavLink,
-  Outlet,
-  isRouteErrorResponse,
-  useRouteError,
-} from "@remix-run/react";
+import { Form, Link, NavLink, Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { not } from "ramda";
 import { useState } from "react";
-import { Button, Divider, Drawer, Dropdown, Menu, Navbar } from "react-daisyui";
+import { Button, Drawer, Menu, Navbar, Select } from "react-daisyui";
 import { FaBars } from "react-icons/fa";
 
 import { ButtonLink } from "~/components/ButtonLink";
 import ErrorHandler from "~/components/ErrorHandler";
+import SelectTeam from "~/components/SelectTeam/SelectTeam";
 
 import { useOptionalUser } from "~/hooks/useUser";
 
@@ -55,6 +49,7 @@ export const App = () => {
             >
               <FaBars />
             </Button>
+            <SelectTeam />
           </Navbar.Start>
           <Navbar.End>
             <Menu horizontal className="p-0">

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { DateTime } from "luxon";
 import { not, pathOr } from "ramda";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Modal } from "react-daisyui";
+import { Button, Modal, Select } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
 import zod from "zod";
@@ -152,14 +152,14 @@ const LoanSelector = () => {
         <option>Select a loan to associate with</option>
         {/* @ts-ignore */}
         {loans.map((loan) => (
-          <option value={loan.id} key={loan.id}>
+          <Select.Option value={loan.id} key={loan.id}>
             {loan.label} (
             <MoneyFormat
               value={loan.amount}
               currency={loan.currency as CurrencyEnum}
             />
             )
-          </option>
+          </Select.Option>
         ))}
       </SelectControl>
     </>

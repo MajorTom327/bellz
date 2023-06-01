@@ -4,7 +4,7 @@ import { redirect } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { isNil } from "ramda";
-import { Button, Card } from "react-daisyui";
+import { Button, Card, Select } from "react-daisyui";
 import {
   AuthenticityTokenInput,
   notFound,
@@ -77,10 +77,10 @@ export const AppAccounts$accountIdPreferences = () => {
               name="accountType"
               defaultValue={account.type}
             >
-              <option value={AccountType.Cash}>Cash</option>
-              <option value={AccountType.Safe}>Safe</option>
-              <option value={AccountType.Wallet}>Wallet</option>
-              <option value={AccountType.Bank}>Bank</option>
+              <Select.Option value={AccountType.Cash}>Cash</Select.Option>
+              <Select.Option value={AccountType.Safe}>Safe</Select.Option>
+              <Select.Option value={AccountType.Wallet}>Wallet</Select.Option>
+              <Select.Option value={AccountType.Bank}>Bank</Select.Option>
             </SelectControl>
 
             <Card.Actions className="justify-end">

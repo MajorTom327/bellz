@@ -169,9 +169,9 @@ export const AppConverter = () => {
                 }}
               >
                 {Object.values(CurrencyEnum).map((currency) => (
-                  <option key={currency} value={currency}>
+                  <Select.Option key={currency} value={currency}>
                     {currency}
-                  </option>
+                  </Select.Option>
                 ))}
               </Select>
             </InputGroup>
@@ -201,9 +201,9 @@ export const AppConverter = () => {
                 }
               >
                 {Object.values(CurrencyEnum).map((currency) => (
-                  <option key={currency} value={currency}>
+                  <Select.Option key={currency} value={currency}>
                     {currency}
-                  </option>
+                  </Select.Option>
                 ))}
               </Select>
             </InputGroup>
