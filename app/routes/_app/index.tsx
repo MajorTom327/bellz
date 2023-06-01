@@ -1,10 +1,17 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { not } from "ramda";
+import { not, prop } from "ramda";
 import { useState } from "react";
 import { Button, Drawer, Menu, Navbar, Select } from "react-daisyui";
 import { FaBars } from "react-icons/fa";
+import { badRequest, notFound, verifyAuthenticityToken } from "remix-utils";
+import zod from "zod";
+import { sessionStorage } from "~/services.server/session";
+
+import ensureUser from "~/lib/authorization/ensureUser";
+
+import TeamController from "~/controllers/TeamController";
 
 import { ButtonLink } from "~/components/ButtonLink";
 import ErrorHandler from "~/components/ErrorHandler";
@@ -14,8 +21,14 @@ import { useOptionalUser } from "~/hooks/useUser";
 
 type LoaderData = {};
 
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({});
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+
+  return json<LoaderData>({
+    teamId: session.get("teamId"),
+  });
 };
 
 export const App = () => {
@@ -141,8 +154,41 @@ export const Sidebar = ({
   );
 };
 
-export const action: ActionFunction = async () => {
-  return json({});
+export const action: ActionFunction = async ({ request }) => {
+  const user = await ensureUser(request);
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+
+  await verifyAuthenticityToken(request, session);
+
+  const formData = await request.formData();
+  const { teamId } = zod
+    .object({
+      teamId: zod.string(),
+    })
+    .parse(Object.fromEntries(formData.entries()));
+
+  const teamController = new TeamController();
+
+  const teams = await teamController.getTeamsForUser(user.id);
+
+  if (!teams.map(prop("id")).includes(teamId)) {
+    throw badRequest({ message: "Team not found" });
+  }
+
+  session.set("teamId", teamId);
+
+  return json(
+    {
+      teamId,
+    },
+    {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session),
+      },
+    }
+  );
 };
 
 export const ErrorBoundary = ErrorHandler;
