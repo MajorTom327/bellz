@@ -39,7 +39,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.0.0",
+    "@faker-js/faker": "^8.0.2",
     "@remix-run/dev": "^1.16.1",
     "@remix-run/eslint-config": "^1.16.1",
     "@remix-run/serve": "^1.16.1",
