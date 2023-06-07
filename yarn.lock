@@ -1665,7 +1665,7 @@
     source-map-support "^0.5.21"
     stream-slice "^0.1.2"
 
-"@remix-run/node@^1.17.0":
+"@remix-run/node@1.17.0", "@remix-run/node@^1.17.0":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@remix-run/node/-/node-1.17.0.tgz#c0b6230b397999de548d8b5144469c4cff230114"
   integrity sha512-V7RLOwOBZci/gbIi7eALR3BFvJmN3t9RGgCEaZfzU3Cc0OBKf5+/dp4cK6tEwa9eOEagzkLV2YTFl5OA3Zws8Q==
@@ -2341,13 +2341,13 @@
     typescript "4.9.5"
     ws "8.13.0"
 
-"@vercel/remix@^1.16.1":
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/@vercel/remix/-/remix-1.16.1.tgz#c70c9fcadf50767438ad4220dca6a2893b7deb58"
-  integrity sha512-WdQSSjpzr7IDO2zeGBxs+tDD45S8KtnOEWZQSrFL8ZyhpxAqfHWR04rlVAI3iU+/xF4+xJzqA40tRyA/y4N+UQ==
+"@vercel/remix@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@vercel/remix/-/remix-1.17.0.tgz#d97813868388cf6d5829d15def89223b1a78af1b"
+  integrity sha512-6AG9aWwibZuHdqtU1UsKqrr/1HYVS4Zh5nFydJQDuT31qLqyICpm2ZBCN9YsQv6u37CpCXM9VPitXA+FoLPfiA==
   dependencies:
-    "@remix-run/node" "1.16.1"
-    "@remix-run/server-runtime" "1.16.1"
+    "@remix-run/node" "1.17.0"
+    "@remix-run/server-runtime" "1.17.0"
     isbot "^3.6.8"
 
 "@vercel/static-config@2.0.17":
