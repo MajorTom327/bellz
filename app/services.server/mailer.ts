@@ -1,16 +1,15 @@
 import type { Transporter } from "nodemailer";
 import nodeMailer from "nodemailer";
 import zod from "zod";
+import type { EmailOptions } from "~/emails";
+import emails from "~/emails";
 
 type SendMailOptions = {
-  from: string;
+  from?: string;
   to: string;
-  subject: string;
   cc?: string[];
   bcc?: string[];
-  text?: string;
-  html?: string;
-};
+} & EmailOptions;
 
 export class Mailer {
   transport: Transporter;
@@ -38,16 +37,20 @@ export class Mailer {
   }
 
   sendMail(options: SendMailOptions) {
-    console.log("Sending mail...");
+    const { from, to, cc, bcc, params, emailId } = options;
+
+    const email = new emails[emailId]();
+
+    const renderedEmail = email.render(params);
 
     return this.transport.sendMail({
-      from: options.from,
-      to: options.to,
-      cc: options.cc,
-      bcc: options.bcc,
-      subject: options.subject,
-      text: options.text,
-      html: options.html,
+      from: from || process.env.MAILER_FROM,
+      to,
+      cc,
+      bcc,
+      subject: renderedEmail.subject,
+      text: renderedEmail.text,
+      html: renderedEmail.html,
     });
   }
 }

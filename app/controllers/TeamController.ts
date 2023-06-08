@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { prisma } from "~/services.server/db";
+import Mailer from "~/services.server/mailer";
 
 export class TeamController {
   invitUser(teamId: string, email: string) {
@@ -19,8 +20,16 @@ export class TeamController {
       .then((invitation) => {
         // Todo: Send email for invitation
 
-        const route = `/teams/join/${invitation.token}`;
-        console.log("Invitation created", route);
+        const route = `${process.env.APP_HOST}/teams/join/${invitation.token}`;
+
+        const mailer = new Mailer();
+        mailer.sendMail({
+          emailId: "invitation",
+          to: email,
+          params: {
+            acceptLink: route,
+          },
+        });
 
         return invitation;
       });

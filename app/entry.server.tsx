@@ -15,7 +15,19 @@ import checkEnv from "./lib/checkEnv";
 const ABORT_DELAY = 5_000;
 
 // * Declare here the variables to check for in your .env file
-checkEnv({});
+checkEnv({
+  required: [
+    "SESSION_SECRET",
+    "DATABASE_URL",
+    "CRON_API_KEY",
+    "MAILER_HOST",
+    "MAILER_PORT",
+    "MAILER_USER",
+    "MAILER_PASS",
+    "MAILER_FROM",
+    "APP_HOST",
+  ],
+});
 
 export default function handleRequest(
   request: Request,
