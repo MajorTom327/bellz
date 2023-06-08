@@ -38,6 +38,7 @@ export const FormControl: React.FC<Props> = ({
           id={inputId}
           type={type}
           name={name}
+          step={type === "number" ? "0.01" : undefined}
           required={required}
           placeholder={label}
           disabled={disabled}
