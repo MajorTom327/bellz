@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useNavigation } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { Alert, Button, Card } from "react-daisyui";
 import { BiError } from "react-icons/bi";
@@ -39,6 +39,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const AuthSignup = () => {
   const { error } = useLoaderData<typeof loader>();
+  const { state } = useNavigation();
+
+  const isSubmitting = state === "submitting";
 
   return (
     <>
@@ -72,7 +75,12 @@ export const AuthSignup = () => {
             <ButtonLink color="ghost" to="/login">
               Login
             </ButtonLink>
-            <Button color="success" type="submit">
+            <Button
+              color="success"
+              type="submit"
+              disabled={isSubmitting}
+              loading={isSubmitting}
+            >
               Signup
             </Button>
           </Card.Actions>
