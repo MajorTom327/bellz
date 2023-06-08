@@ -4,6 +4,7 @@ import type {
   PrismaClient,
   Transaction,
 } from "@prisma/client";
+import Bluebird from "bluebird";
 import { isNotNil } from "ramda";
 import type AccountType from "~/refs/AccountType";
 import type CurrencyEnum from "~/refs/CurrencyEnum";
@@ -92,7 +93,10 @@ export class AccountController {
 
   addTransactionToAccount(
     accountId: string,
-    transaction: Omit<Transaction, "accountId">
+    transaction: Omit<
+      Transaction,
+      "id" | "accountId" | "createdAt" | "updatedAt"
+    >
   ): Promise<Transaction> {
     return prisma.$transaction(async (tx) => {
       const tr = await tx.transaction.create({
@@ -154,6 +158,35 @@ export class AccountController {
       data: {
         balance: sumValue,
       },
+    });
+  }
+
+  removeAccountFromAllTeams(accountId: string) {
+    return prisma.$transaction(async (tx) => {
+      const teams = await tx.team.findMany({
+        where: {
+          accounts: {
+            some: {
+              id: accountId,
+            },
+          },
+        },
+      });
+
+      return Bluebird.mapSeries(teams, async (team) => {
+        await tx.team.update({
+          where: {
+            id: team.id,
+          },
+          data: {
+            accounts: {
+              disconnect: {
+                id: accountId,
+              },
+            },
+          },
+        });
+      });
     });
   }
 }

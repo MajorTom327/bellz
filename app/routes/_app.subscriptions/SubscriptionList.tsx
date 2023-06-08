@@ -4,6 +4,7 @@ import classNames from "classnames";
 import type { ReactElement } from "react";
 import React from "react";
 import { Table, Toggle } from "react-daisyui";
+import { useAuthenticityToken } from "remix-utils";
 import type AccountType from "~/refs/AccountType";
 import type CurrencyEnum from "~/refs/CurrencyEnum";
 
@@ -35,11 +36,14 @@ export const SubscriptionList: React.FC<Props> = ({
   subscriptions,
   accounts,
 }) => {
+  const csrf = useAuthenticityToken();
   const fetcher = useFetcher();
 
   const handleToggleSubscription = (subscription: Subscription) => () => {
     fetcher.submit(
-      {},
+      {
+        csrf,
+      },
       {
         method: "POST",
         action: `/subscriptions/${subscription.id}/toggle`,

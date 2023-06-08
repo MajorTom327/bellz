@@ -7,12 +7,13 @@ import type {
 import { Form } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { prop, propOr } from "ramda";
-import { Button, Card } from "react-daisyui";
+import { Button, Card, Select } from "react-daisyui";
 import { AuthenticityTokenInput, verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 import { commitSession, getSession } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import UserController from "~/controllers/UserController";
@@ -59,9 +60,9 @@ export const AppProfile = () => {
               defaultValue={propOr(CurrencyEnum.EUR, "currency", profile)}
             >
               {Object.entries(CurrencyEnum).map(([key, value]) => (
-                <option key={key} value={value}>
+                <Select.Option key={key} value={value}>
                   {value}
-                </option>
+                </Select.Option>
               ))}
             </SelectControl>
 
@@ -78,11 +79,7 @@ export const AppProfile = () => {
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await ensureUser(request);
-
-  await verifyAuthenticityToken(
-    request,
-    await getSession(request.headers.get("Cookie"))
-  );
+  await ensureCsrf(request);
 
   const session = await getSession(request.headers.get("Cookie"));
 

@@ -55,10 +55,10 @@ export const CreateAccount: React.FC<Props> = ({}) => {
             <FormControl label="Account label" name="label" />
             <FormControl label="Initial Balance" name="balance" type="number" />
             <SelectControl label="Account Type" name="accountType">
-              <option value={AccountType.Cash}>Cash</option>
-              <option value={AccountType.Safe}>Safe</option>
-              <option value={AccountType.Wallet}>Wallet</option>
-              <option value={AccountType.Bank}>Bank</option>
+              <Select.Option value={AccountType.Cash}>Cash</Select.Option>
+              <Select.Option value={AccountType.Safe}>Safe</Select.Option>
+              <Select.Option value={AccountType.Wallet}>Wallet</Select.Option>
+              <Select.Option value={AccountType.Bank}>Bank</Select.Option>
             </SelectControl>
 
             <CurrencySelector defaultValue={currency} />

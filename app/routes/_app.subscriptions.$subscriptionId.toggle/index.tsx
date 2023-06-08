@@ -2,6 +2,7 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json } from "@vercel/remix";
 import zod from "zod";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import SubscriptionController from "~/controllers/SubscriptionController";
@@ -20,6 +21,7 @@ export const AppSubscriptions$subscriptionIdToggle = () => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   await ensureUser(request);
+  await ensureCsrf(request);
   const { subscriptionId } = zod
     .object({ subscriptionId: zod.string() })
     .parse(params);

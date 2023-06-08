@@ -1,20 +1,16 @@
 import type { Account } from "@prisma/client";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { isNil } from "ramda";
-import { Button, Card } from "react-daisyui";
-import {
-  AuthenticityTokenInput,
-  notFound,
-  verifyAuthenticityToken,
-} from "remix-utils";
+import { Button, Card, Select } from "react-daisyui";
+import { AuthenticityTokenInput, notFound } from "remix-utils";
 import { match } from "ts-pattern";
 import zod from "zod";
 import AccountType from "~/refs/AccountType";
-import { getSession } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import { AccountController } from "~/controllers/AccountController";
@@ -46,6 +42,18 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export const AppAccounts$accountIdPreferences = () => {
   const { account } = useLoaderData<typeof loader>();
 
+  const fetcher = useFetcher();
+
+  const handleDisconnectFromAllTeams = async () => {
+    fetcher.submit(
+      {},
+      {
+        method: "POST",
+        action: "/accounts/" + account.id + "/disconnect",
+      }
+    );
+  };
+
   return (
     <>
       <Form method="POST">
@@ -65,10 +73,10 @@ export const AppAccounts$accountIdPreferences = () => {
               name="accountType"
               defaultValue={account.type}
             >
-              <option value={AccountType.Cash}>Cash</option>
-              <option value={AccountType.Safe}>Safe</option>
-              <option value={AccountType.Wallet}>Wallet</option>
-              <option value={AccountType.Bank}>Bank</option>
+              <Select.Option value={AccountType.Cash}>Cash</Select.Option>
+              <Select.Option value={AccountType.Safe}>Safe</Select.Option>
+              <Select.Option value={AccountType.Wallet}>Wallet</Select.Option>
+              <Select.Option value={AccountType.Bank}>Bank</Select.Option>
             </SelectControl>
 
             <Card.Actions className="justify-end">
@@ -88,6 +96,18 @@ export const AppAccounts$accountIdPreferences = () => {
             </Card.Title>
             <div className="flex flex-col gap-2">
               <AuthenticityTokenInput />
+
+              <Button
+                type="button"
+                color="warning"
+                disabled={
+                  fetcher.state === "submitting" || fetcher.type === "done"
+                }
+                onClick={handleDisconnectFromAllTeams}
+              >
+                Disconnect account from all teams
+              </Button>
+
               <TimedButton
                 name="action"
                 value="delete-account"
@@ -107,10 +127,7 @@ export const AppAccounts$accountIdPreferences = () => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await ensureUser(request);
-  await verifyAuthenticityToken(
-    request,
-    await getSession(request.headers.get("Cookie"))
-  );
+  await ensureCsrf(request);
   const formData = await request.formData();
 
   const data = Object.fromEntries(formData.entries());

@@ -6,12 +6,12 @@ import type {
 import { redirect } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { badRequest, verifyAuthenticityToken } from "remix-utils";
+import { badRequest } from "remix-utils";
 import zod from "zod";
 import AccountType from "~/refs/AccountType";
 import CurrencyEnum from "~/refs/CurrencyEnum";
-import { getSession } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import { AccountController } from "~/controllers/AccountController";
@@ -24,8 +24,12 @@ export const meta: V2_MetaFunction = () => {
   return [{ title: "Bellz - Accounts" }];
 };
 
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({});
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await ensureUser(request);
+
+  const accounts = await new AccountController().getAccountsForUser(user.id);
+
+  return json<LoaderData>({ accounts });
 };
 
 export const AppAccounts = () => <Outlet />;
@@ -33,8 +37,7 @@ export const AppAccounts = () => <Outlet />;
 export const action: ActionFunction = async ({ request }) => {
   // * Create account
   const user = await ensureUser(request);
-  const session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(request, session);
+  await ensureCsrf(request);
 
   const formData = await request.formData();
   const data = Object.fromEntries(formData.entries());

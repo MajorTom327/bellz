@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { DateTime } from "luxon";
 import { not, pathOr } from "ramda";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Modal } from "react-daisyui";
+import { Button, Modal, Select } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
 import { AuthenticityTokenInput } from "remix-utils";
 import zod from "zod";
@@ -119,9 +119,10 @@ const DirectionSelector = () => {
         >
           <div
             className={classNames(
-              "w-1/2 h-full rounded bg-primary/60 text-primary-content shadow transform transition-all",
+              "w-1/2 h-full rounded shadow transform transition-all",
               {
                 "translate-x-full bg-error/60 text-error-content": isExpense,
+                "bg-primary/60 text-primary-content": not(isExpense),
               }
             )}
           >
@@ -151,14 +152,14 @@ const LoanSelector = () => {
         <option>Select a loan to associate with</option>
         {/* @ts-ignore */}
         {loans.map((loan) => (
-          <option value={loan.id} key={loan.id}>
+          <Select.Option value={loan.id} key={loan.id}>
             {loan.label} (
             <MoneyFormat
               value={loan.amount}
               currency={loan.currency as CurrencyEnum}
             />
             )
-          </option>
+          </Select.Option>
         ))}
       </SelectControl>
     </>

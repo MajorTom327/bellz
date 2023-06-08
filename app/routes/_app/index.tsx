@@ -1,27 +1,35 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  NavLink,
-  Outlet,
-  isRouteErrorResponse,
-  useRouteError,
-} from "@remix-run/react";
+import { Form, Link, NavLink, Outlet } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { not } from "ramda";
+import { not, prop } from "ramda";
 import { useState } from "react";
-import { Button, Divider, Drawer, Dropdown, Menu, Navbar } from "react-daisyui";
+import { Button, Drawer, Menu, Navbar } from "react-daisyui";
 import { FaBars } from "react-icons/fa";
+import { AuthenticityTokenInput, badRequest } from "remix-utils";
+import zod from "zod";
+import { sessionStorage } from "~/services.server/session";
+
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
+import ensureUser from "~/lib/authorization/ensureUser";
+
+import TeamController from "~/controllers/TeamController";
 
 import { ButtonLink } from "~/components/ButtonLink";
 import ErrorHandler from "~/components/ErrorHandler";
+import SelectTeam from "~/components/SelectTeam/SelectTeam";
 
 import { useOptionalUser } from "~/hooks/useUser";
 
 type LoaderData = {};
 
-export const loader: LoaderFunction = async () => {
-  return json<LoaderData>({});
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+
+  return json<LoaderData>({
+    teamId: session.get("teamId"),
+  });
 };
 
 export const App = () => {
@@ -44,7 +52,7 @@ export const App = () => {
         sideClassName="lg:border-r"
       >
         <Navbar className="bg-base-100 shadow-xl">
-          <Navbar.Start>
+          <Navbar.Start className="flex gap-2">
             <ButtonLink color="ghost" to="/">
               Bellz
             </ButtonLink>
@@ -55,12 +63,14 @@ export const App = () => {
             >
               <FaBars />
             </Button>
+            <SelectTeam />
           </Navbar.Start>
           <Navbar.End>
             <Menu horizontal className="p-0">
               {user ? (
                 <>
                   <Form method="post" action="/logout">
+                    <AuthenticityTokenInput />
                     <Menu.Item>
                       <Button type="submit" color="ghost">
                         Logout
@@ -121,6 +131,9 @@ export const Sidebar = ({
           <NavLink to="/converter">Converter</NavLink>
         </Menu.Item>
         <Menu.Item>
+          <NavLink to="/teams">Teams</NavLink>
+        </Menu.Item>
+        <Menu.Item>
           <NavLink to="/profile">Profile</NavLink>
         </Menu.Item>
 
@@ -143,8 +156,40 @@ export const Sidebar = ({
   );
 };
 
-export const action: ActionFunction = async () => {
-  return json({});
+export const action: ActionFunction = async ({ request }) => {
+  const user = await ensureUser(request);
+  await ensureCsrf(request);
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+
+  const formData = await request.formData();
+  const { teamId } = zod
+    .object({
+      teamId: zod.string(),
+    })
+    .parse(Object.fromEntries(formData.entries()));
+
+  const teamController = new TeamController();
+
+  const teams = await teamController.getTeamsForUser(user.id);
+
+  if (!teams.map(prop("id")).includes(teamId)) {
+    throw badRequest({ message: "Team not found" });
+  }
+
+  session.set("teamId", teamId);
+
+  return json(
+    {
+      teamId,
+    },
+    {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session),
+      },
+    }
+  );
 };
 
 export const ErrorBoundary = ErrorHandler;

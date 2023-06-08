@@ -1,15 +1,17 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { json } from "@vercel/remix";
-import { useDebounce, useDebounceEffect } from "ahooks";
+import { useDebounceEffect } from "ahooks";
 import { pathOr, values } from "ramda";
 import { useEffect, useReducer } from "react";
 import { Button, Card, Input, InputGroup, Select } from "react-daisyui";
 import { HiOutlineSwitchHorizontal } from "react-icons/hi";
+import { useAuthenticityToken } from "remix-utils";
 import { match } from "ts-pattern";
 import zod from "zod";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import FinanceApi from "~/lib/finance";
 
 import ErrorHandler from "~/components/ErrorHandler";
@@ -46,6 +48,7 @@ type ReducerAction =
 
 export const AppConverter = () => {
   const user = useOptionalUser();
+  const csrf = useAuthenticityToken();
   const defaultCurrency = pathOr(
     CurrencyEnum.EUR,
     ["profile", "currency"],
@@ -78,15 +81,17 @@ export const AppConverter = () => {
           };
         })
         .with({ type: "changeFromValue" }, ({ value }) => {
+          const cleanValue = Number(value);
           return {
             ...state,
-            fromValue: value,
+            fromValue: isNaN(cleanValue) ? 0 : cleanValue,
           };
         })
         .with({ type: "changeToValue" }, ({ value }) => {
+          const cleanValue = Number(value);
           return {
             ...state,
-            toValue: value,
+            toValue: isNaN(cleanValue) ? 0 : cleanValue,
           };
         })
         .otherwise(() => state);
@@ -109,6 +114,7 @@ export const AppConverter = () => {
 
       fetcher.submit(
         {
+          csrf,
           from: currentState.fromCurrency,
           to: currentState.toCurrency,
           value: currentState.fromValue.toString(),
@@ -169,9 +175,9 @@ export const AppConverter = () => {
                 }}
               >
                 {Object.values(CurrencyEnum).map((currency) => (
-                  <option key={currency} value={currency}>
+                  <Select.Option key={currency} value={currency}>
                     {currency}
-                  </option>
+                  </Select.Option>
                 ))}
               </Select>
             </InputGroup>
@@ -201,9 +207,9 @@ export const AppConverter = () => {
                 }
               >
                 {Object.values(CurrencyEnum).map((currency) => (
-                  <option key={currency} value={currency}>
+                  <Select.Option key={currency} value={currency}>
                     {currency}
-                  </option>
+                  </Select.Option>
                 ))}
               </Select>
             </InputGroup>
@@ -215,6 +221,7 @@ export const AppConverter = () => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+  await ensureCsrf(request);
   const formData = await request.formData();
 
   const params = zod
