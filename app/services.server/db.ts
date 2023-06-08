@@ -51,7 +51,9 @@ function getClient() {
       db: {
         url:
           databaseUrl.toString() +
-          "?connect_timeout=15&pool_timeout=15&pgbouncer=true",
+          (!isLocalHost
+            ? "?connect_timeout=15&pool_timeout=15&pgbouncer=true"
+            : ""),
       },
     },
   });

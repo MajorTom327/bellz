@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+li[role="menuitem"] link {
+  display: none;
+}
 /* .drawer-side {
   max-height: 85vh!important;
 }

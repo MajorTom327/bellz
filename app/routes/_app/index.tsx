@@ -108,33 +108,49 @@ export const Sidebar = ({
     <>
       <Menu className="bg-base-100/90">
         <Menu.Title>
-          <Link to="/">Bellz</Link>
+          <Link to="/" prefetch="intent">
+            Bellz
+          </Link>
         </Menu.Title>
         <Menu.Item>
-          <NavLink to="/" end>
+          <NavLink to="/" prefetch="intent" end>
             Dashboard
           </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink to="/accounts">Accounts</NavLink>
+          <NavLink to="/accounts" prefetch="intent">
+            Accounts
+          </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink to="/loans">Loans</NavLink>
+          <NavLink to="/loans" prefetch="intent">
+            Loans
+          </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink to="/subscriptions">Subscriptions & Incomes</NavLink>
+          <NavLink to="/subscriptions" prefetch="intent">
+            Subscriptions & Incomes
+          </NavLink>
         </Menu.Item>
         <Menu.Title>
-          <Link to="/converter">Tools</Link>
+          <Link to="/converter" prefetch="intent">
+            Tools
+          </Link>
         </Menu.Title>
         <Menu.Item>
-          <NavLink to="/converter">Converter</NavLink>
+          <NavLink to="/converter" prefetch="intent">
+            Converter
+          </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink to="/teams">Teams</NavLink>
+          <NavLink to="/teams" prefetch="intent">
+            Teams
+          </NavLink>
         </Menu.Item>
         <Menu.Item>
-          <NavLink to="/profile">Profile</NavLink>
+          <NavLink to="/profile" prefetch="intent">
+            Profile
+          </NavLink>
         </Menu.Item>
 
         <Menu.Item className="lg:hidden">
