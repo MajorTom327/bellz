@@ -28,6 +28,13 @@ function getClient() {
 
   const databaseUrl = new URL(DATABASE_URL);
 
+  if (DATABASE_URL.includes("eu-central-1")) {
+    databaseUrl.host = databaseUrl.host.replace(
+      "eu-central-1",
+      "-pooler.eu-central-1"
+    );
+  }
+
   const isLocalHost = databaseUrl.hostname === "localhost";
 
   if (!isLocalHost) {
