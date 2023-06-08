@@ -81,15 +81,17 @@ export const AppConverter = () => {
           };
         })
         .with({ type: "changeFromValue" }, ({ value }) => {
+          const cleanValue = Number(value);
           return {
             ...state,
-            fromValue: value,
+            fromValue: isNaN(cleanValue) ? 0 : cleanValue,
           };
         })
         .with({ type: "changeToValue" }, ({ value }) => {
+          const cleanValue = Number(value);
           return {
             ...state,
-            toValue: value,
+            toValue: isNaN(cleanValue) ? 0 : cleanValue,
           };
         })
         .otherwise(() => state);
