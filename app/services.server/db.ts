@@ -30,7 +30,7 @@ function getClient() {
 
   if (DATABASE_URL.includes("eu-central-1")) {
     databaseUrl.host = databaseUrl.host.replace(
-      "eu-central-1",
+      ".eu-central-1",
       "-pooler.eu-central-1"
     );
   }
