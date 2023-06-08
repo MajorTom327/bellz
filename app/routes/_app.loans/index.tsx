@@ -6,6 +6,7 @@ import { promiseHash } from "remix-utils";
 import zod from "zod";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import LoanController from "~/controllers/LoanController";
@@ -51,6 +52,7 @@ export const AppLoans = () => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+  await ensureCsrf(request);
   const user = await ensureUser(request);
 
   const formData = await request.formData();

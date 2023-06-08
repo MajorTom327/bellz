@@ -12,13 +12,12 @@ import { DateTime } from "luxon";
 import { identity, multiply, omit, pathOr, pick, propEq } from "ramda";
 import { useState } from "react";
 import { Button, Card } from "react-daisyui";
-import { verifyAuthenticityToken } from "remix-utils";
 import { P, match } from "ts-pattern";
 import zod from "zod";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 import OccurenceEnum from "~/refs/OccurenceEnum";
-import { getSession } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 import FinanceApi from "~/lib/finance";
 
@@ -154,10 +153,7 @@ export const AppSubscriptions = () => {
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await ensureUser(request);
-  await verifyAuthenticityToken(
-    request,
-    await getSession(request.headers.get("Cookie"))
-  );
+  await ensureCsrf(request);
 
   const formData = await request.formData();
   const data = Object.fromEntries(formData.entries());

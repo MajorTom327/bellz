@@ -5,6 +5,8 @@ import { verifyAuthenticityToken } from "remix-utils";
 import zod from "zod";
 import { getSession } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
+
 import { AccountController } from "~/controllers/AccountController";
 
 import { TransactionSchema } from "~/models/Transaction";
@@ -20,8 +22,7 @@ export const AppAccounts$accountIdTransactions = () => {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  let session = await getSession(request.headers.get("Cookie"));
-  await verifyAuthenticityToken(request, session);
+  await ensureCsrf(request);
 
   const { accountId } = zod
     .object({

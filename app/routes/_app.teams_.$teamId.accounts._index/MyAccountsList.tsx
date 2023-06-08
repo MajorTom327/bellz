@@ -3,6 +3,7 @@ import { useFetcher, useParams } from "@remix-run/react";
 import { pathOr, prop } from "ramda";
 import React, { useEffect } from "react";
 import { Button, Card, Table, Toggle } from "react-daisyui";
+import { useAuthenticityToken } from "remix-utils";
 import type CurrencyEnum from "~/refs/CurrencyEnum";
 
 import { MoneyFormat } from "~/components/MoneyFormat";
@@ -14,6 +15,7 @@ type Props = {
 export const MyAccountsList: React.FC<Props> = ({ teamAccounts }) => {
   const fetcher = useFetcher();
   const fetcherSubmit = useFetcher();
+  const csrf = useAuthenticityToken();
 
   const { teamId } = useParams();
 
@@ -27,7 +29,9 @@ export const MyAccountsList: React.FC<Props> = ({ teamAccounts }) => {
 
   const handleToggleAccount = (accountId: string) => () => {
     fetcherSubmit.submit(
-      {},
+      {
+        csrf,
+      },
       {
         method: "PATCH",
         action: `/teams/${teamId}/accounts/${accountId}`,

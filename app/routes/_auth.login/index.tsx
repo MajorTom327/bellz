@@ -5,9 +5,11 @@ import { json } from "@vercel/remix";
 import { omit } from "ramda";
 import { Alert, Button, Card, Input } from "react-daisyui";
 import { BiError } from "react-icons/bi";
-import { unauthorized } from "remix-utils";
+import { AuthenticityTokenInput, unauthorized } from "remix-utils";
 import zod from "zod";
 import { sessionStorage } from "~/services.server/session";
+
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 
 import UserController from "~/controllers/UserController";
 
@@ -75,6 +77,7 @@ export const AuthLogin = () => {
               placeholder="Password"
             />
           </div>
+          <AuthenticityTokenInput />
           <Card.Actions className="justify-end">
             <ButtonLink color="ghost" to="/signup">
               Signup
@@ -90,6 +93,7 @@ export const AuthLogin = () => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+  await ensureCsrf(request);
   const formData = await request.formData();
 
   const data = Object.fromEntries(formData.entries());

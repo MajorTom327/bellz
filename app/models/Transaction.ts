@@ -10,7 +10,7 @@ export const TransactionSchema = zod
     amount: zod.coerce.number().transform((val) => val * 100),
     description: zod.string(),
     isExpense: zod.coerce.boolean(),
-    loanId: zod.string().optional(),
+    loanId: zod.string().nullable(),
     date: zod.coerce.date(),
   })
   .transform((val) => {

@@ -2,6 +2,7 @@ import type { User } from "@prisma/client";
 import { useFetcher, useParams } from "@remix-run/react";
 import React from "react";
 import { Button } from "react-daisyui";
+import { AuthenticityTokenInput } from "remix-utils";
 
 import { useOptionalUser } from "~/hooks/useUser";
 
@@ -25,6 +26,7 @@ export const UserRow: React.FC<Props> = ({ user }) => {
             method="DELETE"
             action={`/teams/${teamId}/users/${user.id}`}
           >
+            <AuthenticityTokenInput />
             <Button
               type="submit"
               color="error"

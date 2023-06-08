@@ -2,6 +2,7 @@ import { useFetcher, useParams } from "@remix-run/react";
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-daisyui";
 import { FaTimes } from "react-icons/fa";
+import { AuthenticityTokenInput } from "remix-utils";
 
 import { FormControl } from "~/components/FormControl";
 
@@ -42,6 +43,7 @@ export const InvitUser: React.FC<Props> = ({}) => {
           </Modal.Header>
           <Modal.Body>
             <FormControl label="Email" name="email" />
+            <AuthenticityTokenInput />
           </Modal.Body>
           <Modal.Actions>
             <Button

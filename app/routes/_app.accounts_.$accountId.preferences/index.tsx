@@ -5,16 +5,12 @@ import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { json } from "@vercel/remix";
 import { isNil } from "ramda";
 import { Button, Card, Select } from "react-daisyui";
-import {
-  AuthenticityTokenInput,
-  notFound,
-  verifyAuthenticityToken,
-} from "remix-utils";
+import { AuthenticityTokenInput, notFound } from "remix-utils";
 import { match } from "ts-pattern";
 import zod from "zod";
 import AccountType from "~/refs/AccountType";
-import { getSession } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import { AccountController } from "~/controllers/AccountController";
@@ -131,10 +127,7 @@ export const AppAccounts$accountIdPreferences = () => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await ensureUser(request);
-  await verifyAuthenticityToken(
-    request,
-    await getSession(request.headers.get("Cookie"))
-  );
+  await ensureCsrf(request);
   const formData = await request.formData();
 
   const data = Object.fromEntries(formData.entries());
