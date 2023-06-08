@@ -49,7 +49,9 @@ function getClient() {
   const client = new PrismaClient({
     datasources: {
       db: {
-        url: databaseUrl.toString() + "?connect_timeout=15&pool_timeout=15",
+        url:
+          databaseUrl.toString() +
+          "?connect_timeout=15&pool_timeout=15pgbouncer=true",
       },
     },
   });
