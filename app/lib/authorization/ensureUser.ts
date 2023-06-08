@@ -1,4 +1,4 @@
-import { unauthorized } from "remix-utils";
+import { redirect } from "@remix-run/node";
 
 import getUserFromRequest from "../getUserFromRequest";
 
@@ -7,7 +7,7 @@ export const ensureUser = async (req: Request) => {
 
   const user = await getUserFromRequest(request);
 
-  if (!user) throw unauthorized({ message: "Unauthorized" });
+  if (!user) throw redirect("/login");
   return user;
 };
 
