@@ -13,6 +13,7 @@ import zod from "zod";
 import CurrencyEnum from "~/refs/CurrencyEnum";
 import { commitSession, getSession } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import UserController from "~/controllers/UserController";
@@ -78,11 +79,7 @@ export const AppProfile = () => {
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await ensureUser(request);
-
-  await verifyAuthenticityToken(
-    request,
-    await getSession(request.headers.get("Cookie"))
-  );
+  await ensureCsrf(request);
 
   const session = await getSession(request.headers.get("Cookie"));
 

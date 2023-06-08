@@ -2,6 +2,7 @@ import { Form, useFetcher } from "@remix-run/react";
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-daisyui";
 import { FaPlus, FaTimes } from "react-icons/fa";
+import { AuthenticityTokenInput } from "remix-utils";
 
 import { FormControl } from "~/components/FormControl";
 import { CurrencySelector } from "~/components/SelectControl";
@@ -50,6 +51,7 @@ export const CreateLoan: React.FC<Props> = ({}) => {
             </Button>
           </Modal.Header>
           <Modal.Body>
+            <AuthenticityTokenInput />
             <FormControl label="Loan label" name="label" />
             <FormControl label="Amount" name="amount" type="number" />
             <CurrencySelector />

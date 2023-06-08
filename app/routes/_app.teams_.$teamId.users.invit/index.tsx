@@ -3,6 +3,7 @@ import { json } from "@vercel/remix";
 import { badRequest } from "remix-utils";
 import zod from "zod";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import TeamController from "~/controllers/TeamController";
@@ -21,6 +22,7 @@ export const AppTeams$teamIdUsersInvit = () => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await ensureUser(request);
+  await ensureCsrf(request);
   const userId = user.id;
 
   const { teamId } = zod

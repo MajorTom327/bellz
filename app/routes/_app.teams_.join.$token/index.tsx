@@ -11,6 +11,7 @@ import {
 import zod from "zod";
 import { sessionStorage } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import TeamController from "~/controllers/TeamController";
@@ -37,6 +38,7 @@ export const AppTeamsJoin = () => {
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await ensureUser(request);
+  await ensureCsrf(request);
   const userId = user.id;
 
   const { token } = zod

@@ -3,6 +3,7 @@ import { set } from "ramda";
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-daisyui";
 import { FaPlus, FaTimes } from "react-icons/fa";
+import { AuthenticityTokenInput } from "remix-utils";
 
 import { FormControl } from "~/components/FormControl";
 
@@ -49,6 +50,7 @@ export const CreateTeam: React.FC<Props> = ({}) => {
             </Button>
           </Modal.Header>
           <Modal.Body>
+            <AuthenticityTokenInput />
             <FormControl label="Account label" name="name" />
           </Modal.Body>
 

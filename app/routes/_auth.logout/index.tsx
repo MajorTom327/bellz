@@ -2,6 +2,8 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@vercel/remix";
 import { commitSession, getSession } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
+
 import ErrorHandler from "~/components/ErrorHandler";
 
 type LoaderData = {};
@@ -15,7 +17,7 @@ export const AuthLogout = () => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  console.log("LOGOUT");
+  await ensureCsrf(request);
   const session = await getSession(request.headers.get("Cookie"));
 
   session.unset("user");

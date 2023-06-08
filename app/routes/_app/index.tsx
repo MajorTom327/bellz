@@ -5,10 +5,11 @@ import { not, prop } from "ramda";
 import { useState } from "react";
 import { Button, Drawer, Menu, Navbar } from "react-daisyui";
 import { FaBars } from "react-icons/fa";
-import { badRequest, verifyAuthenticityToken } from "remix-utils";
+import { AuthenticityTokenInput, badRequest } from "remix-utils";
 import zod from "zod";
 import { sessionStorage } from "~/services.server/session";
 
+import ensureCsrf from "~/lib/authorization/ensureCsrf";
 import ensureUser from "~/lib/authorization/ensureUser";
 
 import TeamController from "~/controllers/TeamController";
@@ -69,6 +70,7 @@ export const App = () => {
               {user ? (
                 <>
                   <Form method="post" action="/logout">
+                    <AuthenticityTokenInput />
                     <Menu.Item>
                       <Button type="submit" color="ghost">
                         Logout
@@ -156,11 +158,10 @@ export const Sidebar = ({
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await ensureUser(request);
+  await ensureCsrf(request);
   const session = await sessionStorage.getSession(
     request.headers.get("Cookie")
   );
-
-  await verifyAuthenticityToken(request, session);
 
   const formData = await request.formData();
   const { teamId } = zod

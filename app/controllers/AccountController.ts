@@ -93,7 +93,10 @@ export class AccountController {
 
   addTransactionToAccount(
     accountId: string,
-    transaction: Omit<Transaction, "accountId">
+    transaction: Omit<
+      Transaction,
+      "id" | "accountId" | "createdAt" | "updatedAt"
+    >
   ): Promise<Transaction> {
     return prisma.$transaction(async (tx) => {
       const tr = await tx.transaction.create({
