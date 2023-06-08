@@ -27,8 +27,6 @@ function getClient() {
   assert(typeof DATABASE_URL === "string", "DATABASE_URL env var not set");
 
   const databaseUrl = new URL(DATABASE_URL);
-  databaseUrl.searchParams.set("connect_timeout", "15");
-  databaseUrl.searchParams.set("pool_timeout", "15");
 
   const isLocalHost = databaseUrl.hostname === "localhost";
 
@@ -44,7 +42,7 @@ function getClient() {
   const client = new PrismaClient({
     datasources: {
       db: {
-        url: databaseUrl.toString(),
+        url: databaseUrl.toString() + "?connect_timeout=15&pool_timeout=15",
       },
     },
   });
