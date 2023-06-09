@@ -1644,12 +1644,12 @@
     eslint-plugin-react-hooks "^4.6.0"
     eslint-plugin-testing-library "^5.10.2"
 
-"@remix-run/express@1.16.1":
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/@remix-run/express/-/express-1.16.1.tgz#db0a51e6dab947ec9e9c3cc3916f15a85aa67d59"
-  integrity sha512-qBIuFiA0qiHCTT36RwnzxhoVaAEwUmg5bihxwSkhj6zIhjM98e1DQHeKJ4f0G9Zf/qxvdl+cRNjzvlauPmocqQ==
+"@remix-run/express@1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/express/-/express-1.17.0.tgz#3859544a296857afb707c86e64b163e23dbd554e"
+  integrity sha512-n3NlKfX9XrIap7z8Hd2i/U/yN642dxx7UgCSXm5lgQ7NY1Xzb7KbjktqLoOlr5yKm3a9NEn4/LGJP4VZtPi9Dw==
   dependencies:
-    "@remix-run/node" "1.16.1"
+    "@remix-run/node" "1.17.0"
 
 "@remix-run/node@1.16.1":
   version "1.16.1"
@@ -1699,13 +1699,13 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.6.3.tgz#8205baf6e17ef93be35bf62c37d2d594e9be0dad"
   integrity sha512-EXJysQ7J3veRECd0kZFQwYYd5sJMcq2O/m60zu1W2l3oVQ9xtub8jTOtYRE0+M2iomyG/W3Ps7+vp2kna0C27Q==
 
-"@remix-run/serve@^1.16.1":
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/@remix-run/serve/-/serve-1.16.1.tgz#0af31a19659eb85ad1ec50ae35383d964b22d6b8"
-  integrity sha512-wpYZcUH6rITI9fnUsHffLhOcq98l6DMQh9MFAiGjUjPpMta7X2c7C/l3xOsL3ioE45b1d7A+tS0F69aV71u+uQ==
+"@remix-run/serve@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/serve/-/serve-1.17.0.tgz#5ee5d6cd81c16c6d199690594c3a7d9deaa92867"
+  integrity sha512-cRg1D5a2nQDFQU6O78MmOV74+NLYRUcuSkiEQhZfq4qAvq71V0RTDOGuWzPtUUl0ekisvefkmfbmrutugsZj/A==
   dependencies:
-    "@remix-run/express" "1.16.1"
-    "@remix-run/node" "1.16.1"
+    "@remix-run/express" "1.17.0"
+    "@remix-run/node" "1.17.0"
     compression "^1.7.4"
     express "^4.17.1"
     morgan "^1.10.0"
