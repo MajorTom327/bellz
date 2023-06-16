@@ -15,7 +15,7 @@
     "@prisma/client": "4.15.0",
     "@remix-run/css-bundle": "^1.17.0",
     "@remix-run/node": "^1.17.0",
-    "@remix-run/react": "^1.16.1",
+    "@remix-run/react": "^1.17.1",
     "@remix-run/vercel": "^1.16.1",
     "@vercel/node": "^2.10.3",
     "@vercel/remix": "^1.17.0",
