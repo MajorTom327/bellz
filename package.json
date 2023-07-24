@@ -35,7 +35,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.9.0",
     "remix-utils": "^6.3.0",
-    "ts-pattern": "^4.3.0",
+    "ts-pattern": "^5.0.4",
     "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },
