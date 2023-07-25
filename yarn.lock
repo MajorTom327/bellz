@@ -1566,14 +1566,12 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-4.15.0.tgz#d8687a9fda615fab88b75b466931280289de9e26"
   integrity sha512-FTaOCGs0LL0OW68juZlGxFtYviZa4xdQj/rQEdat2txw0s3Vu/saAPKjNVXfIgUsGXmQ72HPgNr6935/P8FNAA==
 
-"@remix-run/css-bundle@^1.17.0":
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/css-bundle/-/css-bundle-1.17.0.tgz#bc1977854f3b275e73fbb7a6a3972694304ea7ac"
-  integrity sha512-uQNxO60qcV3+S/ASjmxan1PoJlu9EVWNQ9g16jAHEfj/XA0DpCdGVU87GhkdnFGJee6OyLeg7fO4jPKZ+dvKbA==
-  dependencies:
-    "@remix-run/dev" "1.17.0"
+"@remix-run/css-bundle@^1.19.1":
+  version "1.19.1"
+  resolved "https://registry.yarnpkg.com/@remix-run/css-bundle/-/css-bundle-1.19.1.tgz#94f363016661a56b93171c8c8b134dd76b00224a"
+  integrity sha512-KHIgRlhVm5MFgZgwhKiPm9mkGPy9Bg1YJpDTGqI64OXR193S9uOw89//Nd5ypvsb7EokPzY70YtbbsZWDbh8+A==
 
-"@remix-run/dev@1.17.0", "@remix-run/dev@^1.16.1":
+"@remix-run/dev@^1.16.1":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-1.17.0.tgz#d6e5629a66aa8fc167da8850515936e455e264d4"
   integrity sha512-UczyZdcUfQCS8a53VT4UtGFUCLYPKFiMwfvZMMgDL6kbWnYrknvXkXICqG26QbyR3bKDR6JPm5I6wVsmTGp+vQ==
