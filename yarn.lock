@@ -1576,10 +1576,10 @@
   resolved "https://registry.yarnpkg.com/@remix-run/css-bundle/-/css-bundle-1.19.1.tgz#94f363016661a56b93171c8c8b134dd76b00224a"
   integrity sha512-KHIgRlhVm5MFgZgwhKiPm9mkGPy9Bg1YJpDTGqI64OXR193S9uOw89//Nd5ypvsb7EokPzY70YtbbsZWDbh8+A==
 
-"@remix-run/dev@^1.16.1":
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-1.17.0.tgz#d6e5629a66aa8fc167da8850515936e455e264d4"
-  integrity sha512-UczyZdcUfQCS8a53VT4UtGFUCLYPKFiMwfvZMMgDL6kbWnYrknvXkXICqG26QbyR3bKDR6JPm5I6wVsmTGp+vQ==
+"@remix-run/dev@^1.19.1":
+  version "1.19.1"
+  resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-1.19.1.tgz#6d0d6d9d2efc5a73f9704abaed138604e8f1ed24"
+  integrity sha512-Piv/neRW1yMscvDpg8RZnyFzEYHT0etr3DYvBbSSe3wOWlXRItUFaXdn8I4ecp4gBkaNJmCni8ueYsk8FeqoBw==
   dependencies:
     "@babel/core" "^7.21.8"
     "@babel/generator" "^7.21.5"
@@ -1591,7 +1591,7 @@
     "@babel/traverse" "^7.21.5"
     "@babel/types" "^7.21.5"
     "@npmcli/package-json" "^2.0.0"
-    "@remix-run/server-runtime" "1.17.0"
+    "@remix-run/server-runtime" "1.19.1"
     "@vanilla-extract/integration" "^6.2.0"
     arg "^5.0.1"
     cacache "^15.0.5"
@@ -1599,7 +1599,7 @@
     chokidar "^3.5.1"
     dotenv "^16.0.0"
     esbuild "0.17.6"
-    esbuild-plugin-polyfill-node "^0.2.0"
+    esbuild-plugins-node-modules-polyfill "^1.3.0"
     execa "5.1.1"
     exit-hook "2.2.1"
     express "^4.17.1"
@@ -1612,11 +1612,12 @@
     json5 "^2.2.2"
     lodash "^4.17.21"
     lodash.debounce "^4.0.8"
-    lru-cache "^7.14.1"
     minimatch "^9.0.0"
     node-fetch "^2.6.9"
     ora "^5.4.1"
+    picocolors "^1.0.0"
     picomatch "^2.3.1"
+    pidtree "^0.6.0"
     postcss "^8.4.19"
     postcss-discard-duplicates "^5.1.0"
     postcss-load-config "^4.0.1"
@@ -1687,11 +1688,6 @@
     "@remix-run/router" "1.7.2"
     react-router-dom "6.14.2"
 
-"@remix-run/router@1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.6.3.tgz#8205baf6e17ef93be35bf62c37d2d594e9be0dad"
-  integrity sha512-EXJysQ7J3veRECd0kZFQwYYd5sJMcq2O/m60zu1W2l3oVQ9xtub8jTOtYRE0+M2iomyG/W3Ps7+vp2kna0C27Q==
-
 "@remix-run/router@1.7.2":
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.7.2.tgz#cba1cf0a04bc04cb66027c51fa600e9cbc388bc8"
@@ -1707,17 +1703,6 @@
     compression "^1.7.4"
     express "^4.17.1"
     morgan "^1.10.0"
-
-"@remix-run/server-runtime@1.17.0":
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/server-runtime/-/server-runtime-1.17.0.tgz#f49168e9e1d1e343afe842305f346a934897d8a2"
-  integrity sha512-xcUXaOibfIFZlvuyuWouz/t3fYhHCqRoKeGxQFGd1BvQBCmPaiau7B1Ao4aJFKyY7eU/L35KCaGzZBTdIF+d5w==
-  dependencies:
-    "@remix-run/router" "1.6.3"
-    "@web3-storage/multipart-parser" "^1.0.0"
-    cookie "^0.4.1"
-    set-cookie-parser "^2.4.8"
-    source-map "^0.7.3"
 
 "@remix-run/server-runtime@1.19.1":
   version "1.19.1"
@@ -3876,13 +3861,14 @@ esbuild-openbsd-64@0.14.47:
   resolved "https://registry.yarnpkg.com/esbuild-openbsd-64/-/esbuild-openbsd-64-0.14.47.tgz#309af806db561aa886c445344d1aacab850dbdc5"
   integrity sha512-QpgN8ofL7B9z8g5zZqJE+eFvD1LehRlxr25PBkjyyasakm4599iroUpaj96rdqRlO2ShuyqwJdr+oNqWwTUmQw==
 
-esbuild-plugin-polyfill-node@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/esbuild-plugin-polyfill-node/-/esbuild-plugin-polyfill-node-0.2.0.tgz#26a3572c6b32bee126319ebdb4fa3ab584e30106"
-  integrity sha512-rpCoK4mag0nehBtFlFMLSuL9bNBLEh8h3wZ/FsrJEDompA/AwOqInx6Xow01+CXAcvZYhkoJ0SIZiS37qkecDA==
+esbuild-plugins-node-modules-polyfill@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/esbuild-plugins-node-modules-polyfill/-/esbuild-plugins-node-modules-polyfill-1.3.0.tgz#aa61ca6189d54b163acc503b9fcbbbc825f28226"
+  integrity sha512-r/aNOvAlIaIzqJwvFHWhDGrPF/Aj5qI1zKVeHbCFpKH+bnKW1BG2LGixMd3s6hyWcZHcfdl2QZRucVuOLzFRrA==
   dependencies:
     "@jspm/core" "^2.0.1"
-    import-meta-resolve "^2.2.2"
+    local-pkg "^0.4.3"
+    resolve.exports "^2.0.2"
 
 esbuild-sunos-64@0.14.47:
   version "0.14.47"
@@ -5138,11 +5124,6 @@ import-fresh@^3.2.1:
     parent-module "^1.0.0"
     resolve-from "^4.0.0"
 
-import-meta-resolve@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/import-meta-resolve/-/import-meta-resolve-2.2.2.tgz#75237301e72d1f0fbd74dbc6cca9324b164c2cc9"
-  integrity sha512-f8KcQ1D80V7RnqVm+/lirO9zkOxjGxhaTC1IPrBGd3MEfNgmNG67tSUO9gTi2F3Blr2Az6g1vocaxzkVnWl9MA==
-
 imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
@@ -5899,11 +5880,6 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
-
-lru-cache@^7.14.1:
-  version "7.18.3"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.18.3.tgz#f793896e0fd0e954a59dfdd82f0773808df6aa89"
-  integrity sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==
 
 luxon@^3.3.0:
   version "3.3.0"
@@ -7050,6 +7026,11 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.2.2, picomatch@^2.2.3, picomatc
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
+pidtree@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/pidtree/-/pidtree-0.6.0.tgz#90ad7b6d42d5841e69e0a2419ef38f8883aa057c"
+  integrity sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==
+
 pify@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
@@ -7631,6 +7612,11 @@ resolve-from@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-4.0.0.tgz#4abcd852ad32dd7baabfe9b40e00a36db5f392e6"
   integrity sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==
+
+resolve.exports@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/resolve.exports/-/resolve.exports-2.0.2.tgz#f8c934b8e6a13f539e38b7098e2e36134f01e800"
+  integrity sha512-X2UW6Nw3n/aMgDVy+0rSqgHlv39WZAlZrXCdnbyEiKm17DSqHX4MmQMaST3FbeWR5FTuRcUwYAziZajji0Y7mg==
 
 resolve@^1.1.7, resolve@^1.10.1, resolve@^1.14.2, resolve@^1.22.1, resolve@^1.22.2:
   version "1.22.2"
